@@ -1,2 +1,2 @@
 # rental
-Car Rental app for the Flutterwave Experts Curriculum
+A car rental app using [Flutterwave](https://flutterwave.com/)'s payment technologies
