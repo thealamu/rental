@@ -11,14 +11,15 @@ import (
 
 var errNoPort = fmt.Errorf("No port specified")
 
-func newServer(port string) *http.Server {
+func newServer(port string, router http.Handler) *http.Server {
 	//Fail if port is empty
 	if port == "" {
 		log.Fatal("newServer: ", errNoPort)
 	}
 
 	return &http.Server{
-		Addr: net.JoinHostPort("", port),
+		Addr:    net.JoinHostPort("", port),
+		Handler: router,
 	}
 }
 

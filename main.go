@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/gorilla/mux"
 	"github.com/sethvargo/go-signalcontext"
 
 	flag "github.com/spf13/pflag"
@@ -23,7 +24,11 @@ func main() {
 	ctx, cancel := signalcontext.OnInterrupt()
 	defer cancel()
 
-	srv := newServer(port)
+	//Register paths
+	router := mux.NewRouter()
+	router.HandleFunc("/", rootHandler)
+
+	srv := newServer(port, router)
 	//Run server
 	go run(srv)
 
