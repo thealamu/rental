@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
@@ -27,6 +28,10 @@ func main() {
 	//Register paths
 	router := mux.NewRouter()
 	router.HandleFunc("/", rootHandler)
+
+	//Path /cars
+	carsRouter := router.PathPrefix("/cars").Subrouter()
+	carsRouter.HandleFunc("", carsHandler).Methods(http.MethodGet)
 
 	srv := newServer(port, router)
 	//Run server
