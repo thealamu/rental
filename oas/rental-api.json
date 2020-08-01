@@ -1,0 +1,144 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Rental v1 REST API",
+        "description": "v1 REST API for [Rental](https://github.com/thealamu/rental).",
+        "contact": {
+            "name": "thealamu",
+            "url": "https://github.com/thealamu"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://spdx.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [],
+    "tags": [
+        {
+            "name": "car",
+            "description": "Interact with actions for cars"
+        },
+        {
+            "name": "customer",
+            "description": "Information about and actions for customers"
+        },
+        {
+            "name": "merchant",
+            "description": "Information about and actions for merchants"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "car": {
+                "title": "Car",
+                "description": "Car",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 13690
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Tesla Model 3"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Newly purchased white electric sedan."
+                    },
+                    "charge": {
+                        "$ref": "#/components/schemas/charge"
+                    }
+                }
+            },
+            "charge": {
+                "title": "Charge",
+                "description": "Charge placed on a car",
+                "type": "object",
+                "properties": {
+                    "amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 65.00
+                    },
+                    "currency": {
+                        "description": "Currency the amount is specified in",
+                        "type": "string",
+                        "enum": [
+                            "USD",
+                            "NGN"
+                        ]
+                    },
+                    "per": {
+                        "description": "Specifies how long a single charge caters for",
+                        "type": "string",
+                        "enum": [
+                            "day",
+                            "hour",
+                            "minute"
+                        ]
+                    }
+                }
+            }
+        },
+        "examples": {
+            "cars-list": {
+                "value": [
+                    {
+                        "id": 13690,
+                        "name": "Tesla Model 3",
+                        "description": "Newly acquired and repainted white sedan",
+                        "charge": {
+                            "currency": "USD",
+                            "amount": 15.50,
+                            "per": "hour"
+                        }
+                    },
+                    {
+                        "id": 12468,
+                        "name": "Audi 80",
+                        "description": "Wine colored Audi with a trunk the size of a truck",
+                        "charge": {
+                            "currency": "NGN",
+                            "amount": 8000.00,
+                            "per": "day"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "paths": {
+        "/cars": {
+            "get": {
+                "summary": "List all cars",
+                "description": "List all cars merchants have made public",
+                "tags": [
+                    "car"
+                ],
+                "operationId": "cars/list-all-public",
+                "responses": {
+                    "200": {
+                        "description": "response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/car"
+                                    }
+                                },
+                                "examples": {
+                                    "default": {
+                                        "$ref": "#/components/examples/cars-list"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
