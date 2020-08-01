@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"os"
+
+	"github.com/sethvargo/go-signalcontext"
 
 	flag "github.com/spf13/pflag"
 )
@@ -14,11 +15,21 @@ func main() {
 	if port == "" {
 		//Check if port is set in the environment
 		if port = os.Getenv("PORT"); port == "" {
-			// It's not, default to 8080
+			//It's not, default to 8080
 			port = "8080"
 		}
 	}
-	fmt.Println(port)
+
+	ctx, cancel := signalcontext.OnInterrupt()
+	defer cancel()
+
+	srv := newServer(port)
+	//Run server
+	go run(srv)
+
+	<-ctx.Done()
+	//Gracefully shutdown
+	shutdown(srv)
 }
 
 func parseFlags() {
