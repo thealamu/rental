@@ -30,7 +30,7 @@ func newDatabase() (ret database) {
 }
 
 func setupGDB() {
-	dbURI := os.ExpandEnv("${rtl_user}:${rtl_password}@/${rtl_name}?charset=utf8mb4&parseTime=True&loc=Local")
+	dbURI := os.ExpandEnv("${RTL_USER}:${RTL_PASS}@/${RTL_DB}?charset=utf8mb4&parseTime=True&loc=Local")
 	conn, err := gorm.Open("mysql", dbURI)
 	if err != nil {
 		log.Fatal("setupGormDB: ", err)
