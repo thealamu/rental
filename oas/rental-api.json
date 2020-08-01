@@ -82,6 +82,16 @@
                 }
             }
         },
+        "parameters": {
+            "car-id": {
+                "name": "car_id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        },
         "examples": {
             "cars-list": {
                 "value": [
@@ -133,6 +143,33 @@
                                     "default": {
                                         "$ref": "#/components/examples/cars-list"
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cars/{car_id}": {
+            "get": {
+                "summary": "Get a car",
+                "description": "Retrieve all information about the car with car_id",
+                "tags": [
+                    "car"
+                ],
+                "operationId": "cars/get",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/car-id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/car"
                                 }
                             }
                         }
