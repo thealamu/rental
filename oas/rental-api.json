@@ -80,6 +80,32 @@
                         ]
                     }
                 }
+            },
+            "merchant": {
+                "title": "Merchant",
+                "description": "Merchant",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 13691
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Awesome Lenders"
+                    },
+                    "website": {
+                        "description": "External website for a merchant",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://example.com"
+                    },
+                    "carsCount": {
+                        "description": "Number of cars the merchant has registered",
+                        "type": "integer",
+                        "example": 24
+                    }
+                }
             }
         },
         "parameters": {
@@ -153,7 +179,7 @@
         "/cars/{car_id}": {
             "get": {
                 "summary": "Get a car",
-                "description": "Retrieve all information about the car with car_id",
+                "description": "Retrieve all information about a car",
                 "tags": [
                     "car"
                 ],
@@ -170,6 +196,31 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/car"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/merchants": {
+            "get": {
+                "summary": "List all merchants",
+                "description": "List all the merchants",
+                "tags": [
+                    "merchant"
+                ],
+                "operationId": "merchants/list",
+                "responses": {
+                    "200": {
+                        "description": "response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/merchant"
+                                    }
                                 }
                             }
                         }
