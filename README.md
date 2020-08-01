@@ -3,6 +3,8 @@ A car rental app using [Flutterwave](https://flutterwave.com/)'s payment technol
 
 ![Go](https://github.com/thealamu/rental/workflows/Go/badge.svg)
 
+**NOTE: This repo is for the backend API and its implementation alone**
+
 ## Proposed Features
 - [ ] Customer and Merchant Accounts
 - [ ] Merchant Resource(Car) management
