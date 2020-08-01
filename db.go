@@ -13,6 +13,10 @@ type database struct {
 	gormDB *gorm.DB
 }
 
+func (d database) close() {
+	d.gormDB.Close()
+}
+
 var (
 	once sync.Once
 	gdb  *gorm.DB
@@ -27,8 +31,9 @@ func newDatabase() (ret database) {
 
 func setupGDB() {
 	dbURI := os.ExpandEnv("${rtl_user}:${rtl_password}@/${rtl_name}?charset=utf8mb4&parseTime=True&loc=Local")
-	gdb, err := gorm.Open("mysql", dbUri)
+	conn, err := gorm.Open("mysql", dbURI)
 	if err != nil {
 		log.Fatal("setupGormDB: ", err)
 	}
+	gdb = conn
 }
