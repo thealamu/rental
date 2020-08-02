@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -12,13 +11,13 @@ var endpoints = struct{}{}
 
 //rootHandler serves the root path
 func rootHandler(w http.ResponseWriter, r *http.Request) {
+	tag := "handler.root"
 	//return all the endpoints
 	data, err := json.Marshal(endpoints)
 	if err != nil {
-		log.Println("rootHandler:", err)
+		log.Printf("%s: %v", tag, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	fmt.Fprint(w, string(data))
+	w.Write(data)
 }
