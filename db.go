@@ -28,8 +28,8 @@ type database struct {
 	gormDB *gorm.DB
 }
 
-//newDatabase returns a new database object using the dialect in the config;
-//it defaults to mysql. All database objects use the same underlying gorm db
+//newDatabase returns a new database object using the dialect in the config.
+//All database objects use the same underlying gorm db
 func newDatabase(config *dbconfig) (ret database, err error) {
 	ret = database{}
 	once.Do(func() {
