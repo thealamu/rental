@@ -30,9 +30,9 @@
     ],
     "components": {
         "schemas": {
-            "car": {
-                "title": "Car",
-                "description": "Car",
+            "public-car": {
+                "title": "Public car",
+                "description": "Car made public by a merchant",
                 "type": "object",
                 "properties": {
                     "id": {
@@ -49,8 +49,86 @@
                     },
                     "charge": {
                         "$ref": "#/components/schemas/charge"
+                    },
+                    "make": {
+                        "description": "Car manufacturer",
+                        "type": "string",
+                        "example": "Tesla"
+                    },
+                    "transmission": {
+                        "description": "Car transmission type",
+                        "type": "string",
+                        "enum": [
+                            "automatic",
+                            "manual"
+                        ]
+                    },
+                    "seatCount": {
+                        "description": "Number of seats in the car",
+                        "type": "integer"
+                    },
+                    "imgUrl": {
+                        "description": "Link to picture of the car",
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "color": {
+                        "description": "Color of the car",
+                        "type": "string"
+                    },
+                    "ac": {
+                        "description": "Denotes if car has air conditioning",
+                        "type": "boolean"
+                    },
+                    "electric": {
+                        "description": "Denotes if car is electric",
+                        "type": "boolean"
+                    },
+                    "convertible": {
+                        "description": "Denotes if car is convertible",
+                        "type": "boolean"
                     }
-                }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "charge"
+                ]
+            },
+            "car": {
+                "title": "Car",
+                "description": "Car",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/public-car"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "createdAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "1985-04-12T23:20:50.52Z"
+                            },
+                            "updatedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "1985-04-12T23:20:50.52Z"
+                            },
+                            "deletedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "1985-04-12T23:20:50.52Z"
+                            }
+                        },
+                        "required": [
+                            "createdAt",
+                            "updatedAt",
+                            "deletedAt"
+                        ]
+                    }
+                ]
             },
             "charge": {
                 "title": "Charge",
@@ -119,17 +197,22 @@
             }
         },
         "examples": {
-            "cars-list": {
+            "public-cars-list": {
                 "value": [
                     {
                         "id": 13690,
-                        "name": "Tesla Model 3",
+                        "name": "Model 3",
                         "description": "Newly acquired and repainted white sedan",
                         "charge": {
                             "currency": "USD",
                             "amount": 15.50,
                             "per": "hour"
-                        }
+                        },
+                        "make": "Tesla",
+                        "seatCount": 3,
+                        "color": "velvet",
+                        "electric": true,
+                        "convertible": false
                     },
                     {
                         "id": 12468,
@@ -162,12 +245,12 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/car"
+                                        "$ref": "#/components/schemas/public-car"
                                     }
                                 },
                                 "examples": {
                                     "default": {
-                                        "$ref": "#/components/examples/cars-list"
+                                        "$ref": "#/components/examples/public-cars-list"
                                     }
                                 }
                             }
@@ -195,7 +278,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/car"
+                                    "$ref": "#/components/schemas/public-car"
                                 }
                             }
                         }
