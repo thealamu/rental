@@ -8,7 +8,12 @@ import (
 
 //carsHandler serves path /cars
 func carsHandler(w http.ResponseWriter, r *http.Request) {
-	db := newDatabase()
+	db, err := newDatabase(nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	pubCars, err := db.listPublicCars()
 	if err != nil {
 		log.Println(err)
