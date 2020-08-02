@@ -8,7 +8,7 @@ type car struct {
 	gorm.Model
 	Name         string `json:"name"`
 	Description  string `json:"description"`
-	Charge       charge `json:"charge"`
+	Charge       charge `json:"charge" gorm:"embedded"`
 	Make         string `json:"make"`
 	Transmission string `json:"transmission"`
 	SeatCount    int    `json:"seatCount"`
@@ -23,7 +23,7 @@ type pubCar struct {
 	ID           uint   `json:"id"`
 	Name         string `json:"name"`
 	Description  string `json:"description"`
-	Charge       charge `json:"charge"`
+	Charge       charge `json:"charge" gorm:"embedded"`
 	Make         string `json:"make"`
 	Transmission string `json:"transmission"`
 	SeatCount    int    `json:"seatCount"`
