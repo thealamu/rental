@@ -6,6 +6,13 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
+func TestSetupGDBErrorOnBadURI(t *testing.T) {
+	err := setupGDB("mysql", "baduri")
+	if err == nil {
+		t.Error("Expected error from setupGDB for bad uri, got nil")
+	}
+}
+
 func TestNewDB(t *testing.T) {
 	var c dbconfig
 	c.dialect = "sqlite3"
