@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/sethvargo/go-signalcontext"
-
 	flag "github.com/spf13/pflag"
 )
 
@@ -34,7 +34,8 @@ func main() {
 	carsRouter.HandleFunc("", carsHandler).Methods(http.MethodGet)
 	carsRouter.HandleFunc("/{car_id}", carHandler).Methods(http.MethodGet)
 
-	srv := newServer(port, router)
+	loggedRouter := handlers.LoggingHandler(os.Stdout, router)
+	srv := newServer(port, loggedRouter)
 	//Run server
 	go run(srv)
 
