@@ -6,6 +6,38 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
+var testDBConfig = &dbconfig{
+	dialect: "sqlite3",
+	dbURI:   "file::memory:?cache=shared",
+}
+
+func TestGetPublicCarForID(t *testing.T) {
+	db, err := newDatabase(testDBConfig)
+	if err != nil {
+		t.Error(err)
+	}
+
+	//init
+	var firstCar car
+	firstCar.ID = 11
+	var testCar car
+	testCar.ID = 12
+
+	//insert
+	db.gormDB.Create(firstCar)
+	db.gormDB.Create(testCar)
+	//read
+	savedCar, err := db.getPublicCarForID(testCar.ID)
+	if err != nil {
+		t.Error(err)
+	}
+
+	//validate
+	if savedCar.ID != testCar.ID {
+		t.Errorf("getPublicCarForID returns incorrect car, expected car with ID %d, got ID %d", testCar.ID, savedCar.ID)
+	}
+}
+
 func TestSetupGDBErrorOnBadURI(t *testing.T) {
 	err := setupGDB("mysql", "baduri")
 	if err == nil {
@@ -14,11 +46,7 @@ func TestSetupGDBErrorOnBadURI(t *testing.T) {
 }
 
 func TestNewDB(t *testing.T) {
-	var c dbconfig
-	c.dialect = "sqlite3"
-	c.dbURI = "file::memory:?cache=shared"
-
-	db, err := newDatabase(&c)
+	db, err := newDatabase(testDBConfig)
 	if err != nil {
 		t.Error(err)
 	}

@@ -1,11 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"sync"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+)
+
+//errors
+var (
+	errNotFound = fmt.Errorf("Resource not found")
 )
 
 //configurations for the database
@@ -37,6 +43,16 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 	})
 	ret.gormDB = gdb
 	return
+}
+
+//getPublicCarForID returns a public car with the specified ID
+func (d database) getPublicCarForID(carID uint) (pubCar, error) {
+	var pub pubCar
+	err := d.gormDB.Table(carsTableName).First(&pub, carID).Error
+	if err == gorm.ErrRecordNotFound {
+		err = errNotFound
+	}
+	return pub, err
 }
 
 //listPublicCars returns all cars made public by merchants
