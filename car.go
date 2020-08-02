@@ -6,36 +6,36 @@ const carsTableName = "cars"
 
 type car struct {
 	gorm.Model
-	Name         string
-	Description  string
-	Charge       charge
-	Make         string
-	Transmission string
-	SeatCount    int
-	ImgURL       string
-	Color        string
-	AC           bool
-	Electric     bool
-	Convertible  bool
+	Name         string `json:"name"`
+	Description  string `json:"description"`
+	Charge       charge `json:"charge"`
+	Make         string `json:"make"`
+	Transmission string `json:"transmission"`
+	SeatCount    int    `json:"seatCount"`
+	ImgURL       string `json:"imgUrl"`
+	Color        string `json:"color"`
+	AC           bool   `json:"ac"`
+	Electric     bool   `json:"electric"`
+	Convertible  bool   `json:"convertible"`
 }
 
 type pubCar struct {
-	ID           uint
-	Name         string
-	Description  string
-	Charge       charge
-	Make         string
-	Transmission string
-	SeatCount    int
-	ImgURL       string
-	Color        string
-	AC           bool
-	Electric     bool
-	Convertible  bool
+	ID           uint   `json:"id"`
+	Name         string `json:"name"`
+	Description  string `json:"description"`
+	Charge       charge `json:"charge"`
+	Make         string `json:"make"`
+	Transmission string `json:"transmission"`
+	SeatCount    int    `json:"seatCount"`
+	ImgURL       string `json:"imgUrl"`
+	Color        string `json:"color"`
+	AC           bool   `json:"ac"`
+	Electric     bool   `json:"electric"`
+	Convertible  bool   `json:"convertible"`
 }
 
 type charge struct {
-	Amount   float32
-	Currency string
-	Per      string
+	Amount   float32 `json:"amount"`
+	Currency string  `json:"currency"`
+	Per      string  `json:"per"`
 }
