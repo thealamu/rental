@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"sync"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -26,8 +25,7 @@ var defaultDbConfig = &dbconfig{
 }
 
 var (
-	once sync.Once
-	gdb  *gorm.DB
+	gdb *gorm.DB
 )
 
 type database struct {
@@ -35,12 +33,12 @@ type database struct {
 }
 
 //newDatabase returns a new database object using the dialect in the config.
-//All database objects use the same underlying gorm db
+// All database objects use the same underlying gorm db
 func newDatabase(config *dbconfig) (ret database, err error) {
 	ret = database{}
-	once.Do(func() {
+	if gdb == nil {
 		err = setupGDB(config.dialect, config.dbURI)
-	})
+	}
 	ret.gormDB = gdb
 	return
 }
