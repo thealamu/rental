@@ -2,6 +2,8 @@ package main
 
 import "github.com/jinzhu/gorm"
 
+const carsTableName = "cars"
+
 type car struct {
 	gorm.Model
 	Name         string
@@ -33,7 +35,7 @@ type pubCar struct {
 }
 
 type charge struct {
-	amount   float32
-	currency string
-	per      string
+	Amount   float32
+	Currency string
+	Per      string
 }

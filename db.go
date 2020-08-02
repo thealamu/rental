@@ -13,6 +13,12 @@ type database struct {
 	gormDB *gorm.DB
 }
 
+func (d database) listPublicCars() ([]pubCar, error) {
+	var pubs []pubCar
+	err := d.gormDB.Table(carsTableName).Find(&pubs).Error
+	return pubs, err
+}
+
 func (d database) close() {
 	d.gormDB.Close()
 }
