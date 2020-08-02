@@ -36,4 +36,5 @@ func setupGDB() {
 		log.Fatal("setupGormDB: ", err)
 	}
 	gdb = conn
+	gdb.AutoMigrate(&car{})
 }
