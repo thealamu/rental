@@ -197,17 +197,22 @@
             }
         },
         "examples": {
-            "cars-list": {
+            "public-cars-list": {
                 "value": [
                     {
                         "id": 13690,
-                        "name": "Tesla Model 3",
+                        "name": "Model 3",
                         "description": "Newly acquired and repainted white sedan",
                         "charge": {
                             "currency": "USD",
                             "amount": 15.50,
                             "per": "hour"
-                        }
+                        },
+                        "make": "Tesla",
+                        "seatCount": 3,
+                        "color": "velvet",
+                        "electric": true,
+                        "convertible": false
                     },
                     {
                         "id": 12468,
@@ -245,7 +250,7 @@
                                 },
                                 "examples": {
                                     "default": {
-                                        "$ref": "#/components/examples/cars-list"
+                                        "$ref": "#/components/examples/public-cars-list"
                                     }
                                 }
                             }
