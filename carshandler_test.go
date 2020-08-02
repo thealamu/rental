@@ -9,11 +9,17 @@ import (
 )
 
 func TestCarsHandler(t *testing.T) {
+	//use sqlite as default db
+	var c dbconfig
+	c.dialect = "sqlite3"
+	c.dbURI = "file::memory:?cache=shared"
+	defaultDbConfig = &c
+
 	testRequest, err := http.NewRequest(http.MethodGet, "/cars", nil)
 	if err != nil {
 		t.Error(err)
 	}
-	rRecorder := httptest.NewRecorder()	
+	rRecorder := httptest.NewRecorder()
 	router := mux.NewRouter()
 	carsRouter := router.PathPrefix("/cars").Subrouter()
 	carsRouter.HandleFunc("", carsHandler).Methods(http.MethodGet)

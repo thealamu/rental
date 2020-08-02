@@ -8,7 +8,7 @@ import (
 
 //carsHandler serves path /cars
 func carsHandler(w http.ResponseWriter, r *http.Request) {
-	db, err := newDatabase(nil)
+	db, err := newDatabase(defaultDbConfig)
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
