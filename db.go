@@ -12,12 +12,13 @@ var (
 	errNotFound = fmt.Errorf("Resource not found")
 )
 
-//configurations for the database
+//configurations for the database connection
 type dbconfig struct {
 	dialect string
 	dbURI   string
 }
 
+//Default connection configuration, can be used globally
 var defaultDbConfig = &dbconfig{
 	dialect: "mysql",
 	dbURI:   os.ExpandEnv("${RTL_USER}:${RTL_PASS}@/${RTL_DB}?charset=utf8mb4&parseTime=True&loc=Local"),
