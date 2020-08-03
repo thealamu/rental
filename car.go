@@ -19,7 +19,8 @@ type car struct {
 	Convertible  bool   `json:"convertible"`
 }
 
-type pubCar struct {
+//publicCar holds the minimum details any user cares about
+type publicCar struct {
 	ID           uint   `json:"id"`
 	Name         string `json:"name"`
 	Description  string `json:"description"`
