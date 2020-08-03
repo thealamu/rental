@@ -34,9 +34,11 @@ func main() {
 	carsRouter.HandleFunc("", getPublicCars).Methods(http.MethodGet)
 	carsRouter.HandleFunc("/{car_id}", getSinglePublicCar).Methods(http.MethodGet)
 
-	loggedRouter := handlers.LoggingHandler(os.Stdout, router)
-	srv := newServer(port, loggedRouter)
-	//Run server
+	//Wrap the root router with one that logs every request
+	loggingRouter := handlers.LoggingHandler(os.Stdout, router)
+
+	//Create and run the server
+	srv := newServer(port, loggingRouter)
 	go run(srv)
 
 	<-ctx.Done()

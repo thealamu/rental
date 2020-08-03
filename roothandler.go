@@ -6,7 +6,6 @@ import (
 	"net/http"
 )
 
-//endpoints are defined here
 var endpoints = struct {
 	Car string `json:"car_url"`
 }{
