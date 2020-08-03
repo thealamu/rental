@@ -19,18 +19,19 @@ func getSinglePublicCar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	paramCarID := mux.Vars(r)["car_id"]
-	carID, err := strconv.Atoi(paramCarID)
-	if carID < 0 || err != nil {
+	param := mux.Vars(r)["car_id"]
+	//convert the param to int
+	paramCarID, err := strconv.Atoi(param)
+	if err != nil {
 		//bad id
-		log.Printf("%s: bad car id '%s'", tag, paramCarID)
+		log.Printf("%s: %v for bad car_id param '%s'", tag, err, param)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	pubCar, err := db.getPublicCarForID(uint(carID))
+	pubCar, err := db.getPublicCarForID(uint(paramCarID))
 	if err != nil {
-		log.Printf("%s: %v for car id '%s'", tag, err, paramCarID)
+		log.Printf("%s: %v for car_id param '%s'", tag, err, param)
 
 		rspErr := http.StatusInternalServerError
 		if err == errNotFound {
@@ -43,7 +44,7 @@ func getSinglePublicCar(w http.ResponseWriter, r *http.Request) {
 
 	pubCarBytes, err := json.Marshal(pubCar)
 	if err != nil {
-		log.Printf("%s: %v for car id '%s'", tag, err, paramCarID)
+		log.Printf("%s: %v for car_id param '%s'", tag, err, param)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
