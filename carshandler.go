@@ -10,7 +10,7 @@ import (
 )
 
 //carHandler serves path /cars/{car_id}
-func carHandler(w http.ResponseWriter, r *http.Request) {
+func getSinglePublicCar(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.car" //used to identify this function in logs
 	db, err := newDatabase(defaultDbConfig)
 	if err != nil {
@@ -51,7 +51,7 @@ func carHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 //carsHandler serves path /cars
-func carsHandler(w http.ResponseWriter, r *http.Request) {
+func getPublicCars(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.cars"
 	db, err := newDatabase(defaultDbConfig)
 	if err != nil {

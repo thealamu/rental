@@ -31,8 +31,8 @@ func main() {
 
 	//Path /cars
 	carsRouter := router.PathPrefix("/cars").Subrouter()
-	carsRouter.HandleFunc("", carsHandler).Methods(http.MethodGet)
-	carsRouter.HandleFunc("/{car_id}", carHandler).Methods(http.MethodGet)
+	carsRouter.HandleFunc("", getPublicCars).Methods(http.MethodGet)
+	carsRouter.HandleFunc("/{car_id}", getSinglePublicCar).Methods(http.MethodGet)
 
 	loggedRouter := handlers.LoggingHandler(os.Stdout, router)
 	srv := newServer(port, loggedRouter)
