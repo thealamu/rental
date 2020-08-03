@@ -8,7 +8,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-//errors
 var (
 	errNotFound = fmt.Errorf("Resource not found")
 )
@@ -33,7 +32,7 @@ type database struct {
 }
 
 //newDatabase returns a new database object using the dialect in the config.
-// All database objects use the same underlying gorm db
+//All database objects use the same underlying gorm db
 func newDatabase(config *dbconfig) (ret database, err error) {
 	ret = database{}
 	if gdb == nil {

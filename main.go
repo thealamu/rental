@@ -16,17 +16,16 @@ var port string
 func main() {
 	parseFlags()
 	if port == "" {
-		//Check if port is set in the environment
+		//If port is not set in the environment too, default to 8080
 		if port = os.Getenv("PORT"); port == "" {
-			//It's not, default to 8080
 			port = "8080"
 		}
 	}
 
+	//Create a context that closes when SIGINT is received
 	ctx, cancel := signalcontext.OnInterrupt()
 	defer cancel()
 
-	//Register paths
 	router := mux.NewRouter()
 	router.HandleFunc("/", getCommonEndpoints).Methods(http.MethodGet)
 
@@ -43,15 +42,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("main.Main: %v during database init", err)
 	}
-	//Close the db when we exit
 	defer db.close()
 
-	//Create and run the server
 	srv := newServer(port, loggingRouter)
 	go run(srv)
 
 	<-ctx.Done()
-	//Gracefully shutdown
+	//We received SIGINT, gracefully shutdown
 	shutdown(srv)
 }
 

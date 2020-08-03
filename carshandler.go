@@ -20,10 +20,9 @@ func getSinglePublicCar(w http.ResponseWriter, r *http.Request) {
 	}
 
 	param := mux.Vars(r)["car_id"]
-	//convert the param to int
 	paramCarID, err := strconv.Atoi(param)
 	if err != nil {
-		//bad id
+		//bad car id
 		log.Printf("%s: %v for bad car_id param '%s'", tag, err, param)
 		w.WriteHeader(http.StatusBadRequest)
 		return

@@ -12,7 +12,6 @@ import (
 var errNoPort = fmt.Errorf("No port specified")
 
 func newServer(port string, router http.Handler) *http.Server {
-	//Fail if port is empty
 	if port == "" {
 		log.Fatal("newServer: ", errNoPort)
 	}
@@ -23,7 +22,7 @@ func newServer(port string, router http.Handler) *http.Server {
 	}
 }
 
-//shutdown handles shutting down the server
+//shutdown handles gracefully shutting down a server
 func shutdown(s *http.Server) {
 	log.Printf("server.shutdown: shutting down server on %s\n", s.Addr)
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
