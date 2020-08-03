@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"os"
 
@@ -36,6 +37,14 @@ func main() {
 
 	//Wrap the root router with one that logs every request
 	loggingRouter := handlers.LoggingHandler(os.Stdout, router)
+
+	//Init the db, so we know of any errors before we start handling requests
+	db, err := newDatabase(defaultDbConfig)
+	if err != nil {
+		log.Fatalf("main.Main: %v during database init", err)
+	}
+	//Close the db when we exit
+	defer db.close()
 
 	//Create and run the server
 	srv := newServer(port, loggingRouter)
