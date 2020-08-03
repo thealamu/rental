@@ -7,7 +7,11 @@ import (
 )
 
 //endpoints are defined here
-var endpoints = struct{}{}
+var endpoints = struct {
+	Car string `json:"car_url"`
+}{
+	Car: "/cars/{car_id}",
+}
 
 //rootHandler serves the root path
 func rootHandler(w http.ResponseWriter, r *http.Request) {
