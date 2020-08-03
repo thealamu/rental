@@ -45,12 +45,12 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 
 //getPublicCarForID returns a public car with the specified ID
 func (d database) getPublicCarForID(carID uint) (publicCar, error) {
-	var pub publicCar
-	err := d.gormDB.Table(carsTableName).First(&pub, carID).Error
+	var pCar publicCar
+	err := d.gormDB.Table(carsTableName).First(&pCar, carID).Error
 	if err == gorm.ErrRecordNotFound {
 		err = errNotFound
 	}
-	return pub, err
+	return pCar, err
 }
 
 //listPublicCars returns all cars made public by merchants
