@@ -27,7 +27,7 @@ func main() {
 
 	//Register paths
 	router := mux.NewRouter()
-	router.HandleFunc("/", rootHandler)
+	router.HandleFunc("/", getCommonEndpoints).Methods(http.MethodGet)
 
 	//Path /cars
 	carsRouter := router.PathPrefix("/cars").Subrouter()

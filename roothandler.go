@@ -6,21 +6,20 @@ import (
 	"net/http"
 )
 
-var endpoints = struct {
+var commonEndpoints = struct {
 	Car string `json:"car_url"`
 }{
 	Car: "/cars/{car_id}",
 }
 
-//rootHandler serves the root path
-func rootHandler(w http.ResponseWriter, r *http.Request) {
+//getCommonEndpoints serves the root path
+func getCommonEndpoints(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.root"
-	//return all the endpoints
-	data, err := json.Marshal(endpoints)
+	eptsBytes, err := json.Marshal(commonEndpoints)
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.Write(data)
+	w.Write(eptsBytes)
 }
