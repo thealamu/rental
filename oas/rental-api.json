@@ -159,15 +159,11 @@
                     }
                 }
             },
-            "merchant": {
-                "title": "Merchant",
-                "description": "Merchant",
+            "minimal-merchant": {
+                "title": "Minimal Merchant",
+                "description": "Minimum details about a merchant all users care about",
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 13691
-                    },
                     "name": {
                         "type": "string",
                         "example": "Awesome Lenders"
@@ -178,15 +174,53 @@
                         "format": "uri",
                         "example": "https://example.com"
                     },
-                    "carsCount": {
-                        "description": "Number of cars the merchant has registered",
+                    "publicCars": {
+                        "description": "Number of cars the merchant has made public",
                         "type": "integer",
                         "example": 24
                     }
                 },
                 "required": [
                     "name",
-                    "carsCount"
+                    "publicCars"
+                ]
+            },
+            "merchant": {
+                "title": "Merchant",
+                "description": "Merchant",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/minimal-merchant"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "privateCars": {
+                                "description": "Number of cars the merchant has made private",
+                                "type": "integer",
+                                "example": 12
+                            },
+                            "id": {
+                                "type": "integer",
+                                "example": 13691
+                            },
+                            "createdAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "1985-04-12T23:20:50.52Z"
+                            },
+                            "updatedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "1985-04-12T23:20:50.52Z"
+                            },
+                            "deletedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "1985-04-12T23:20:50.52Z"
+                            }
+                        }
+                    }
                 ]
             }
         },
@@ -300,13 +334,13 @@
                 "operationId": "merchants/get",
                 "parameters": [
                     {
-                       "name": "merchant",
-                       "in": "path",
-                       "description": "Name of a merchant",
-                       "required": true,
-                       "schema":{
-                           "type": "string"
-                       }
+                        "name": "merchant",
+                        "in": "path",
+                        "description": "Name of a merchant",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -315,7 +349,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                   "$ref": "#/components/schemas/merchant"
+                                    "$ref": "#/components/schemas/minimal-merchant"
                                 }
                             }
                         }
