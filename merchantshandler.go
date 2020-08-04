@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
@@ -32,11 +31,5 @@ func getSingleMiniMerchant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mchtBytes, err := json.Marshal(mcht)
-	if err != nil {
-		log.Printf("%s: %v for merchant param '%s'", tag, err, paramMerchant)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.Write(mchtBytes)
+	respondJSON(tag, w, mcht)
 }

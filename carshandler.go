@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
@@ -43,13 +42,14 @@ func getSinglePublicCar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pubCarBytes, err := json.Marshal(pubCar)
+	respondJSON(tag, w, pubCar)
+	/*pubCarBytes, err := json.Marshal(pubCar)
 	if err != nil {
 		log.Printf("%s: %v for car_id param '%s'", tag, err, param)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.Write(pubCarBytes)
+	w.Write(pubCarBytes)*/
 }
 
 //carsHandler serves path /cars
@@ -69,11 +69,5 @@ func getPublicCars(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pubCarsBytes, err := json.Marshal(pubCars)
-	if err != nil {
-		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.Write(pubCarsBytes)
+	respondJSON(tag, w, pubCars)
 }
