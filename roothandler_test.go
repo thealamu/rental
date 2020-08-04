@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -29,7 +30,7 @@ func TestRootHandler(t *testing.T) {
 		t.Error(err)
 	}
 	expected := string(data)
-	respBody := rRecorder.Body.String()
+	respBody := strings.TrimSpace(rRecorder.Body.String())
 
 	if respBody != expected {
 		t.Errorf("Wrong response body")
