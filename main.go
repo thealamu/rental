@@ -34,6 +34,9 @@ func main() {
 	carsRouter.HandleFunc("", getPublicCars).Methods(http.MethodGet)
 	carsRouter.HandleFunc("/{car_id:[0-9]+}", getSinglePublicCar).Methods(http.MethodGet)
 
+	//Path /merchants/{merchant}
+	router.HandleFunc("/merchants/{merchant:[a-zA-Z ]+}", getSingleMiniMerchant)
+
 	//Wrap the root router with one that logs every request
 	loggingRouter := handlers.LoggingHandler(os.Stdout, router)
 
