@@ -50,8 +50,8 @@ func TestGetPublicCarForID(t *testing.T) {
 	testCar.ID = 12
 
 	//insert
-	db.gormDB.Create(firstCar)
-	db.gormDB.Create(testCar)
+	db.gormDB.Create(&firstCar)
+	db.gormDB.Create(&testCar)
 	//read
 	savedCar, err := db.getPublicCarForID(testCar.ID)
 	if err != nil {
