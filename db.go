@@ -43,6 +43,16 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 	return
 }
 
+//getMerchantForName returns a merchant with the specified name
+func (d database) getMiniMerchantForName(name string) (minimalMerchant, error) {
+	var miniMcht minimalMerchant
+	err := d.gormDB.First(&miniMcht, name).Error
+	if err == gorm.ErrRecordNotFound {
+		err = errNotFound
+	}
+	return miniMcht, err
+}
+
 //getPublicCarForID returns a public car with the specified ID
 func (d database) getPublicCarForID(carID uint) (publicCar, error) {
 	var pCar publicCar
@@ -72,7 +82,7 @@ func setupGDB(dialect, dbURI string) error {
 		return err
 	}
 	gdb = conn
-	gdb.AutoMigrate(&car{})
+	gdb.AutoMigrate(&car{}, &merchant{})
 
 	return nil
 }
