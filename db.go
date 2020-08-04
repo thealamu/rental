@@ -46,7 +46,7 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 //getMerchantForName returns a merchant with the specified name
 func (d database) getMiniMerchantForName(name string) (minimalMerchant, error) {
 	var miniMcht minimalMerchant
-	err := d.gormDB.First(&miniMcht, name).Error
+	err := d.gormDB.Table(merchantsTableName).First(&miniMcht, "name = ?", name).Error
 	if err == gorm.ErrRecordNotFound {
 		err = errNotFound
 	}

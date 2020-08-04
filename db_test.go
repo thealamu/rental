@@ -22,7 +22,7 @@ func TestGetMiniMerchantForName(t *testing.T) {
 	oneMerchant.Name = "Anvil Car Rentals"
 
 	//insert
-	db.gormDB.Create(oneMerchant)
+	db.gormDB.Create(&oneMerchant)
 
 	//read
 	savedMcht, err := db.getMiniMerchantForName(oneMerchant.Name)
