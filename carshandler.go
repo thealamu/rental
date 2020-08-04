@@ -22,6 +22,8 @@ func getSinglePublicCar(w http.ResponseWriter, r *http.Request) {
 	param := mux.Vars(r)["car_id"]
 	paramCarID, err := strconv.Atoi(param)
 	if err != nil {
+		//err should usually be nil because the router enforces the constraints
+		//for a car id.
 		//bad car id
 		log.Printf("%s: %v for bad car_id param '%s'", tag, err, param)
 		w.WriteHeader(http.StatusBadRequest)

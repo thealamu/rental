@@ -15,7 +15,7 @@ func TestRootHandler(t *testing.T) {
 		t.Error(err)
 	}
 	r := mux.NewRouter()
-	r.HandleFunc("/", rootHandler)
+	r.HandleFunc("/", getCommonEndpoints)
 	rRecorder := httptest.NewRecorder()
 
 	r.ServeHTTP(rRecorder, testRequest)
@@ -24,7 +24,7 @@ func TestRootHandler(t *testing.T) {
 		t.Errorf("Bad status code, got %v, expected %v", rRecorder.Code, http.StatusOK)
 	}
 
-	data, err := json.Marshal(endpoints)
+	data, err := json.Marshal(commonEndpoints)
 	if err != nil {
 		t.Error(err)
 	}
