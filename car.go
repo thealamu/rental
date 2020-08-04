@@ -17,6 +17,7 @@ type car struct {
 	AC           bool   `json:"ac"`
 	Electric     bool   `json:"electric"`
 	Convertible  bool   `json:"convertible"`
+	Visibility   string `json:"visibility" gorm:"default:public"`
 }
 
 //publicCar holds the minimum details any user cares about
