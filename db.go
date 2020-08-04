@@ -56,7 +56,9 @@ func (d database) getMiniMerchantForName(name string) (minimalMerchant, error) {
 //getPublicCarForID returns a public car with the specified ID
 func (d database) getPublicCarForID(carID uint) (publicCar, error) {
 	var pCar publicCar
-	err := d.gormDB.Table(carsTableName).First(&pCar, carID).Where("visibility = public").Error
+	err := d.gormDB.Table(carsTableName).
+		Where("ID = ? AND is_public = ?", carID, true).
+		First(&pCar).Error
 	if err == gorm.ErrRecordNotFound {
 		err = errNotFound
 	}

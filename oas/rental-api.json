@@ -106,13 +106,9 @@
                     {
                         "type": "object",
                         "properties": {
-                            "visibility": {
-                                "type": "string",
-                                "enum": [
-                                    "private",
-                                    "public"
-                                ],
-                                "default": "public"
+                            "isPublic": {
+                                "type": "boolean",
+                                "default": true
                             },
                             "createdAt": {
                                 "type": "string",
