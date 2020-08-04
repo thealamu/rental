@@ -12,5 +12,6 @@ func respondJSON(tag string, w http.ResponseWriter, data interface{}) {
 	err := json.NewEncoder(w).Encode(data)
 	if err != nil {
 		log.Printf("%s: %v while encoding response", tag, err)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
