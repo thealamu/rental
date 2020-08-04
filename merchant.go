@@ -4,7 +4,9 @@ import "github.com/jinzhu/gorm"
 
 type merchant struct {
 	gorm.Model
-	minimalMerchant
+	Name        string `gorm:"PRIMARY_KEY"`
+	Website     string
+	PublicCars  string
 	PrivateCars int
 }
 
