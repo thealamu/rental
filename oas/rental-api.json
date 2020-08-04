@@ -183,7 +183,11 @@
                         "type": "integer",
                         "example": 24
                     }
-                }
+                },
+                "required": [
+                    "name",
+                    "carsCount"
+                ]
             }
         },
         "parameters": {
@@ -286,24 +290,32 @@
                 }
             }
         },
-        "/merchants": {
+        "/merchants/{merchant}": {
             "get": {
-                "summary": "List all merchants",
-                "description": "List all the merchants",
+                "summary": "Get a merchant",
+                "description": "Get info about a merchant",
                 "tags": [
                     "merchant"
                 ],
-                "operationId": "merchants/list",
+                "operationId": "merchants/get",
+                "parameters": [
+                    {
+                       "name": "merchant",
+                       "in": "path",
+                       "description": "Name of a merchant",
+                       "required": true,
+                       "schema":{
+                           "type": "string"
+                       }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "response",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/merchant"
-                                    }
+                                   "$ref": "#/components/schemas/merchant"
                                 }
                             }
                         }
