@@ -68,7 +68,9 @@ func (d database) getPublicCarForID(carID uint) (publicCar, error) {
 //listPublicCars returns all cars made public by merchants
 func (d database) listPublicCars() ([]publicCar, error) {
 	var pubCars []publicCar
-	err := d.gormDB.Table(carsTableName).Find(&pubCars).Error
+	err := d.gormDB.Table(carsTableName).
+		Where("is_public = ?", true).
+		Find(&pubCars).Error
 	return pubCars, err
 }
 
