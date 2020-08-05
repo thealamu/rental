@@ -2,11 +2,34 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
+
+func TestResponseError(t *testing.T) {
+	testErr := fmt.Errorf("Some Error")
+	rRecorder := httptest.NewRecorder()
+	respondError("Some Tag", rRecorder, 34, testErr.Error(), http.StatusTeapot)
+
+	if rRecorder.Code != http.StatusTeapot {
+		t.Errorf("respondError does not return the right status code, want %v, got %v", http.StatusTeapot, rRecorder.Code)
+	}
+
+	var errResp errorResponse
+	err := json.NewDecoder(rRecorder.Body).Decode(&errResp)
+	if err != nil {
+		t.Error(err)
+	}
+	if errResp.Msg != "Some Error" {
+		t.Errorf("respondError does not return the right message, want %v, got %v", "Some Error", errResp.Msg)
+	}
+	if errResp.Code != 34 {
+		t.Errorf("respondError does not return the right error code, want %v, got %v", 34, errResp.Code)
+	}
+}
 
 func TestRespondJSON(t *testing.T) {
 	someData := struct {
