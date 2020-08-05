@@ -38,7 +38,9 @@ func main() {
 	router.HandleFunc("/merchants/{merchant:[a-zA-Z ]+}", getSingleMiniMerchant)
 
 	//Path /auth/login
-	router.HandleFunc("/auth/login", handleLogin)
+	authRouter := router.PathPrefix("/auth").Subrouter()
+	authRouter.HandleFunc("/login", handleLogin)
+	authRouter.HandleFunc("/login/callback", handleLoginCallback)
 
 	//Wrap the root router with one that logs every request
 	loggingRouter := handlers.LoggingHandler(os.Stdout, router)
