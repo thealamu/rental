@@ -35,6 +35,13 @@ func TestGetMiniMerchantForName(t *testing.T) {
 		t.Errorf("getMiniMerchantForName returns incorrect merchant, expected merchant with name %s, got name %s",
 			oneMerchant.Name, savedMcht.Name)
 	}
+
+	//test not found
+	_, err = db.getMiniMerchantForName("Some Name")
+	if err != errNotFound {
+		t.Errorf("getMiniMerchantForName returns %v error, expected errNotFound", err)
+	}
+
 }
 
 func TestGetPublicCarForID(t *testing.T) {
