@@ -52,6 +52,9 @@ func main() {
 	}
 	defer db.close()
 
+	//prepare the session store
+	initSessionStore()
+
 	srv := newServer(port, loggingRouter)
 	go run(srv)
 

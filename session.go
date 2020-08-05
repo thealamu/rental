@@ -10,7 +10,7 @@ import (
 
 var store *sessions.CookieStore
 
-func init() {
+func initSessionStore() {
 	gob.Register(map[string]interface{}{})
 
 	key := os.Getenv("RTL_STOREKEY")
