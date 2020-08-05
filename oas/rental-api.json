@@ -361,6 +361,25 @@
                 }
             }
         },
+        "/merchants/me": {
+            "get": {
+                "summary": "Authed Merchant Info",
+                "description": "Get full info of an authed merchant",
+                "operationId": "merchants/account",
+                "responses": {
+                    "200": {
+                        "description": "response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/merchant"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "get": {
                 "summary": "Login",
