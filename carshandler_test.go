@@ -78,6 +78,17 @@ func TestCarsHandler(t *testing.T) {
 	carsRouter := router.PathPrefix("/cars").Subrouter()
 	carsRouter.HandleFunc("", getPublicCars).Methods(http.MethodGet)
 
+	//test 500 for db error
+	gdb = nil
+	defaultDbConfig = &dbconfig{dialect: "mysql", dbURI: "''@somepath"}
+
+	errRecorder := httptest.NewRecorder()
+	router.ServeHTTP(errRecorder, testRequest)
+
+	if errRecorder.Code != http.StatusInternalServerError {
+		t.Errorf("Unexpected status code, want %v, got %v", http.StatusInternalServerError, errRecorder.Code)
+	}
+
 	//use sqlite as default db
 	var c dbconfig
 	c.dialect = "sqlite3"

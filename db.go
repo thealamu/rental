@@ -77,6 +77,7 @@ func (d database) listPublicCars() ([]publicCar, error) {
 //close closes the gorm db
 func (d database) close() {
 	d.gormDB.Close()
+	gdb = nil
 }
 
 //setupGDB does init of the gorm db
