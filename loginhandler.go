@@ -118,14 +118,14 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 }
 
 func getRedirURL(state string) string {
-	redirURL := strings.Split(state, "?redirectUrl=")[1]
+	redirURL := strings.Split(state, "?state_url=")[1]
 	return redirURL
 }
 
 func appendRedirURL(state string, r *http.Request) (string, error) {
-	redirURL := r.URL.Query().Get("redirectUrl")
+	redirURL := r.URL.Query().Get("state_url")
 	if redirURL == "" {
-		return "", fmt.Errorf("No redirectUrl set")
+		return "", fmt.Errorf("state_url not set")
 	}
-	return state + "?redirectUrl=" + redirURL, nil
+	return state + "?state_url=" + redirURL, nil
 }
