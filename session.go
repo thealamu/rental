@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"log"
 	"os"
 
@@ -10,6 +11,8 @@ import (
 var store *sessions.CookieStore
 
 func init() {
+	gob.Register(map[string]interface{}{})
+
 	key := os.Getenv("RTL_STOREKEY")
 	if key == "" {
 		log.Fatal("session.init: RTL_STOREKEY not set in environment")

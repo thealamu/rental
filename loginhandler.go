@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-var authRedirectURL = "https://localhost:8080/auth/login/callback"
+var authRedirectURL = "http://localhost:8080/auth/login/callback"
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.login"
@@ -20,7 +20,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	state := base64.StdEncoding.EncodeToString(b)
 
-	session, err := store.Get("auth-session")
+	session, err := store.Get(r, "auth-session")
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
 		w.WriteHeader(http.StatusInternalServerError)
