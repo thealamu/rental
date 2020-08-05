@@ -42,6 +42,10 @@ func main() {
 	authRouter.HandleFunc("/login", handleLogin)
 	authRouter.HandleFunc("/login/callback", handleLoginCallback)
 
+	//Path /merchants/me
+	merchmeRouter := router.PathPrefix("/merchants/me").Subrouter()
+	merchmeRouter.HandleFunc("", getMerchantMe)
+
 	//Wrap the root router with one that logs every request
 	loggingRouter := handlers.LoggingHandler(os.Stdout, router)
 
