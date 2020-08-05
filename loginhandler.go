@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"log"
 	"net/http"
 )
@@ -8,7 +10,38 @@ import (
 var authRedirectURL = "https://localhost:8080/auth/login/callback"
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
+	tag := "handler.login"
+	b := make([]byte, 32)
+	_, err := rand.Read(b)
+	if err != nil {
+		log.Printf("%s: %v", tag, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	state := base64.StdEncoding.EncodeToString(b)
 
+	session, err := store.Get("auth-session")
+	if err != nil {
+		log.Printf("%s: %v", tag, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	session.Values["state"] = state
+	if err := session.Save(r, w); err != nil {
+		log.Printf("%s: %v", tag, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	authen, err := newAuthenticator()
+	if err != nil {
+		log.Printf("%s: %v", tag, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, authen.oauthConfig.AuthCodeURL(state), http.StatusTemporaryRedirect)
 }
 
 func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
