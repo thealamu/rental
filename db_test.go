@@ -11,6 +11,35 @@ var testDBConfig = &dbconfig{
 	dbURI:   "file::memory:?cache=shared",
 }
 
+func TestGetMerchantForName(t *testing.T) {
+	db, err := newDatabase(testDBConfig)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var mcht merchant
+	mcht.Name = "Avis Rentals"
+
+	db.gormDB.Create(&mcht)
+
+	savedMcht, err := db.getMerchantForName(mcht.Name)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if savedMcht.Name != mcht.Name {
+		t.Errorf("getMerchantForName returns incorrect merchant, expected merchant with name %s, got name %s",
+			mcht.Name, savedMcht.Name)
+	}
+
+	//test not found
+	_, err = db.getMerchantForName("Some Name")
+	if err != errNotFound {
+		t.Errorf("getMerchantForName returns %v error, expected errNotFound", err)
+	}
+
+}
+
 func TestGetMiniMerchantForName(t *testing.T) {
 	db, err := newDatabase(testDBConfig)
 	if err != nil {

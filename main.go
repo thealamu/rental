@@ -34,6 +34,11 @@ func main() {
 	carsRouter.HandleFunc("", getPublicCars).Methods(http.MethodGet)
 	carsRouter.HandleFunc("/{car_id:[0-9]+}", getSinglePublicCar).Methods(http.MethodGet)
 
+	//Path /merchants/me
+	//must match this before /merchants/{merchant}
+	merchmeRouter := router.PathPrefix("/merchants/me").Subrouter()
+	merchmeRouter.HandleFunc("", getMerchantMe)
+
 	//Path /merchants/{merchant}
 	router.HandleFunc("/merchants/{merchant:[a-zA-Z ]+}", getSingleMiniMerchant)
 
@@ -41,10 +46,6 @@ func main() {
 	authRouter := router.PathPrefix("/auth").Subrouter()
 	authRouter.HandleFunc("/login", handleLogin)
 	authRouter.HandleFunc("/login/callback", handleLoginCallback)
-
-	//Path /merchants/me
-	merchmeRouter := router.PathPrefix("/merchants/me").Subrouter()
-	merchmeRouter.HandleFunc("", getMerchantMe)
 
 	//Wrap the root router with one that logs every request
 	loggingRouter := handlers.LoggingHandler(os.Stdout, router)
