@@ -5,9 +5,13 @@ import (
 )
 
 var commonEndpoints = struct {
-	Car string `json:"car_url"`
+	Car      string `json:"car_url"`
+	Merchant string `json:"merchant_url"`
+	Login    string `json:"login_url"`
 }{
-	Car: "/cars/{car_id}",
+	Car:      "/cars/{car_id}",
+	Merchant: "/merchant/{merchant}",
+	Login:    "/auth/login",
 }
 
 //getCommonEndpoints serves the root path
