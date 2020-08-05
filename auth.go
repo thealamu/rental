@@ -22,9 +22,10 @@ var (
 )
 
 type authenticator struct {
-	provider *oidc.Provider
-	config   oauth2.Config
-	ctx      context.Context
+	provider    *oidc.Provider
+	oidcConfig  *oidc.Config
+	oauthConfig oauth2.Config
+	ctx         context.Context
 }
 
 func newAuthenticator() (*authenticator, error) {
@@ -49,9 +50,14 @@ func newAuthenticator() (*authenticator, error) {
 		Scopes:       []string{oidc.ScopeOpenID, "profile"},
 	}
 
+	oidcConfig := &oidc.Config{
+		ClientID: clientID,
+	}
+
 	return &authenticator{
-		provider: prov,
-		config:   conf,
-		ctx:      ctx,
+		provider:    prov,
+		oidcConfig:  oidcConfig,
+		oauthConfig: conf,
+		ctx:         ctx,
 	}, nil
 }
