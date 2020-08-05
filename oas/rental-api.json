@@ -360,6 +360,31 @@
                     }
                 }
             }
+        },
+        "/auth/login": {
+            "get": {
+                "summary": "Login",
+                "description": "Log a user in",
+                "operationId": "auth/login",
+                "parameters": [
+                    {
+                        "name": "state_url",
+                        "in": "query",
+                        "description": "Url to redirect to after a successful log in",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "http://localhost:8080"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "auth successful"
+                    }
+                }
+            }
         }
     }
 }

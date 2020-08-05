@@ -112,7 +112,6 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(profile)
 	//go to the redirect url inside state
 	http.Redirect(w, r, getRedirURL(stateQuery), http.StatusTemporaryRedirect)
 }
