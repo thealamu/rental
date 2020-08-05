@@ -3,14 +3,17 @@ package main
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
 	"log"
 	"net/http"
+	"strings"
 )
 
 var authRedirectURL = "http://localhost:8080/auth/login/callback"
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.login"
+	//set the state
 	b := make([]byte, 32)
 	_, err := rand.Read(b)
 	if err != nil {
@@ -19,6 +22,12 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	state := base64.StdEncoding.EncodeToString(b)
+	state, err = appendRedirURL(state, r)
+	if err != nil {
+		log.Printf("%s: %v", tag, err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	session, err := store.Get(r, "auth-session")
 	if err != nil {
@@ -104,4 +113,20 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	//go to the redirect url inside state
+	http.Redirect(w, r, getRedirURL(stateQuery), http.StatusTemporaryRedirect)
+}
+
+func getRedirURL(state string) string {
+	redirURL := strings.Split(state, "?redirectUrl=")[1]
+	return redirURL
+}
+
+func appendRedirURL(state string, r *http.Request) (string, error) {
+	redirURL := r.URL.Query().Get("redirectUrl")
+	if redirURL == "" {
+		return "", fmt.Errorf("No redirectUrl set")
+	}
+	return state + "?redirectUrl=" + redirURL, nil
 }
