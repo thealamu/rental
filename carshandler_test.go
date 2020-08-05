@@ -19,6 +19,7 @@ func TestSingleCarHandler(t *testing.T) {
 	carsRouter.HandleFunc("/{car_id:[0-9]+}", getSinglePublicCar).Methods(http.MethodGet)
 
 	//test 500 for db error
+	defaultDbConfig = &dbconfig{dialect: "mysql", dbURI: "''@this.that"}
 	errRecorder := httptest.NewRecorder()
 
 	router.ServeHTTP(errRecorder, testRequest)

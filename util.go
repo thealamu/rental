@@ -27,5 +27,6 @@ func respondJSON(w http.ResponseWriter, data interface{}) {
 	err := json.NewEncoder(w).Encode(data)
 	if err != nil {
 		log.Printf("respondJSON: %v", err)
+		http.Error(w, "JSON Encoding Error", http.StatusInternalServerError)
 	}
 }

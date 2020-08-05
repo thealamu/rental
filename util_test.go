@@ -48,7 +48,7 @@ func TestRespondJSON(t *testing.T) {
 	respondJSON(rRecorder, someData)
 
 	respBodyStr := strings.TrimSpace(rRecorder.Body.String())
-	someDataStr := strings.TrimSpace(string(someDataBytes))
+	someDataStr := string(someDataBytes)
 
 	if respBodyStr != someDataStr {
 		t.Errorf("respondJSON does not write passed in data, expected %v, got %v", someDataStr, respBodyStr)
