@@ -18,35 +18,34 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	_, err := rand.Read(b)
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeUnknown, "", http.StatusInternalServerError)
 		return
 	}
 	state := base64.StdEncoding.EncodeToString(b)
 	state, err = appendRedirURL(state, r)
 	if err != nil {
-		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusBadRequest)
+		respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	session, err := store.Get(r, "auth-session")
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeSessionDB, "Session store failure", http.StatusInternalServerError)
 		return
 	}
 
 	session.Values["state"] = state
 	if err := session.Save(r, w); err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeSessionDB, "Session store failure", http.StatusInternalServerError)
 		return
 	}
 
 	authen, err := newAuthenticator()
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeAuth, "Auth config failure", http.StatusInternalServerError)
 		return
 	}
 
@@ -58,21 +57,20 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 	session, err := store.Get(r, "auth-session")
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeSessionDB, "Session store failure", http.StatusInternalServerError)
 		return
 	}
 
 	stateQuery := r.URL.Query().Get("state")
 	if stateQuery != session.Values["state"] {
-		log.Printf("%s: Invalid state parameter %s", tag, stateQuery)
-		w.WriteHeader(http.StatusBadRequest)
+		respondError(tag, w, failCodeBadParameter, "Invalid state parameter", http.StatusBadRequest)
 		return
 	}
 
 	authen, err := newAuthenticator()
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeAuth, "Auth config failure", http.StatusInternalServerError)
 		return
 	}
 
@@ -80,28 +78,28 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 	token, err := authen.oauthConfig.Exchange(r.Context(), codeQuery)
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusUnauthorized)
+		respondError(tag, w, failCodeAuth, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
 	rawIDToken, ok := token.Extra("id_token").(string)
 	if !ok {
 		log.Printf("%s: No id_token field in oauth2 token", tag)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeAuth, "Auth Failure", http.StatusInternalServerError)
 		return
 	}
 
 	idToken, err := authen.provider.Verifier(authen.oidcConfig).Verify(r.Context(), rawIDToken)
 	if err != nil {
 		log.Printf("%s: Failed to verify ID Token", tag)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeAuth, "Auth Failure", http.StatusInternalServerError)
 		return
 	}
 
 	var profile map[string]interface{}
 	if err := idToken.Claims(&profile); err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeAuth, "Auth Failure", http.StatusInternalServerError)
 		return
 	}
 
@@ -110,10 +108,11 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 	session.Values["profile"] = profile
 	if err := session.Save(r, w); err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeAuth, "Auth Failure", http.StatusInternalServerError)
 		return
 	}
 
+	fmt.Println(profile)
 	//go to the redirect url inside state
 	http.Redirect(w, r, getRedirURL(stateQuery), http.StatusTemporaryRedirect)
 }

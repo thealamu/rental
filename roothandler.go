@@ -12,6 +12,5 @@ var commonEndpoints = struct {
 
 //getCommonEndpoints serves the root path
 func getCommonEndpoints(w http.ResponseWriter, r *http.Request) {
-	tag := "handler.root"
-	respondJSON(tag, w, commonEndpoints)
+	respondJSON(w, commonEndpoints)
 }

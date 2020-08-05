@@ -44,9 +44,8 @@ func TestRespondJSON(t *testing.T) {
 	}
 
 	rRecorder := httptest.NewRecorder()
-	tag := "rjTest"
 
-	respondJSON(tag, rRecorder, someData)
+	respondJSON(rRecorder, someData)
 
 	respBodyStr := strings.TrimSpace(rRecorder.Body.String())
 	someDataStr := strings.TrimSpace(string(someDataBytes))
@@ -57,7 +56,7 @@ func TestRespondJSON(t *testing.T) {
 
 	//Test 500
 	errRecorder := httptest.NewRecorder()
-	respondJSON(tag, errRecorder, func() {})
+	respondJSON(errRecorder, func() {})
 
 	if errRecorder.Code != http.StatusInternalServerError {
 		t.Errorf("Unexpected status code, want %v, got %v", http.StatusInternalServerError, errRecorder.Code)

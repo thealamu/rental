@@ -12,7 +12,7 @@ func getSingleMiniMerchant(w http.ResponseWriter, r *http.Request) {
 	db, err := newDatabase(defaultDbConfig)
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeDB, "", http.StatusInternalServerError)
 		return
 	}
 
@@ -20,16 +20,13 @@ func getSingleMiniMerchant(w http.ResponseWriter, r *http.Request) {
 
 	mcht, err := db.getMiniMerchantForName(paramMerchant)
 	if err != nil {
-		log.Printf("%s: %v for merchant param '%s'", tag, err, paramMerchant)
-
-		rspErr := http.StatusInternalServerError
+		rspErrCode := http.StatusInternalServerError
 		if err == errNotFound {
-			rspErr = http.StatusNotFound
+			rspErrCode = http.StatusNotFound
 		}
-
-		w.WriteHeader(rspErr)
+		respondError(tag, w, failCodeBadParameter, err.Error(), rspErrCode)
 		return
 	}
 
-	respondJSON(tag, w, mcht)
+	respondJSON(w, mcht)
 }

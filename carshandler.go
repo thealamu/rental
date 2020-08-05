@@ -14,7 +14,7 @@ func getSinglePublicCar(w http.ResponseWriter, r *http.Request) {
 	db, err := newDatabase(defaultDbConfig)
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeDB, "", http.StatusInternalServerError)
 		return
 	}
 
@@ -24,32 +24,21 @@ func getSinglePublicCar(w http.ResponseWriter, r *http.Request) {
 		//err should usually be nil because the router enforces the constraints
 		//for a car id.
 		//bad car id
-		log.Printf("%s: %v for bad car_id param '%s'", tag, err, param)
-		w.WriteHeader(http.StatusBadRequest)
+		respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	pubCar, err := db.getPublicCarForID(uint(paramCarID))
 	if err != nil {
-		log.Printf("%s: %v for car_id param '%s'", tag, err, param)
-
 		rspErr := http.StatusInternalServerError
 		if err == errNotFound {
 			rspErr = http.StatusNotFound
 		}
-
-		w.WriteHeader(rspErr)
+		respondError(tag, w, failCodeBadParameter, err.Error(), rspErr)
 		return
 	}
 
-	respondJSON(tag, w, pubCar)
-	/*pubCarBytes, err := json.Marshal(pubCar)
-	if err != nil {
-		log.Printf("%s: %v for car_id param '%s'", tag, err, param)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.Write(pubCarBytes)*/
+	respondJSON(w, pubCar)
 }
 
 //carsHandler serves path /cars
@@ -57,17 +46,15 @@ func getPublicCars(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.cars"
 	db, err := newDatabase(defaultDbConfig)
 	if err != nil {
-		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeDB, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	pubCars, err := db.listPublicCars()
 	if err != nil {
-		log.Printf("%s: %v", tag, err)
-		w.WriteHeader(http.StatusInternalServerError)
+		respondError(tag, w, failCodeDB, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	respondJSON(tag, w, pubCars)
+	respondJSON(w, pubCars)
 }
