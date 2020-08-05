@@ -117,8 +117,7 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 }
 
 func getRedirURL(state string) string {
-	redirURL := strings.Split(state, "?state_url=")[1]
-	return redirURL
+	return strings.Split(state, "?state_url=")[1]
 }
 
 func appendRedirURL(state string, r *http.Request) (string, error) {
