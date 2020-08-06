@@ -38,6 +38,7 @@ func main() {
 	//must match this before /merchants/{merchant}
 	merchmeRouter := router.PathPrefix("/merchants/me").Subrouter()
 	merchmeRouter.HandleFunc("", getMerchantMe)
+	merchmeRouter.Use(authMiddleware)
 
 	//Path /merchants/{merchant}
 	router.HandleFunc("/merchants/{merchant:[a-zA-Z ]+}", getSingleMiniMerchant)
