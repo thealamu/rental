@@ -188,6 +188,17 @@
                     "name",
                     "publicCars"
                 ]
+            }, 
+            "customer": {
+                "title": "Customer",
+                "description": "Customer",
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "jdoe@outlook.com"
+                    }
+                }
             },
             "merchant": {
                 "title": "Merchant",
