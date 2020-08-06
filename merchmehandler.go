@@ -22,21 +22,25 @@ func getMerchantMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	profInterface, ok := session.Values["profile"]
+	profInterface, _ := session.Values["profile"]
+	usernameInterface, ok := profInterface.(map[string]interface{})["name"]
+	username, ok := usernameInterface.(string)
 	if !ok {
+		log.Printf("%s: %s for %v", tag, "name field not defined in profile", usernameInterface)
 		respondError(tag, w, failCodeAuth, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
-	userProfile := profInterface.(map[string]interface{})
-	username, ok := userProfile["name"]
-	if !ok {
-		respondError(tag, w, failCodeAuth, "Unauthorized", http.StatusUnauthorized)
-		return
+	log.Printf("%s: %s", tag, username)
+
+	//Verify user is a merchant
+	if !db.getMerchantExistsForName(username) {
+		log.Printf("%s: %v is not a merchant", tag, username)
+		respondError(tag, w, failCodeAuth, "Not a merchant", http.StatusForbidden)
 	}
 
 	//Get merchant details from db
-	mcht, err := db.getMerchantForName(username.(string))
+	mcht, err := db.getMerchantForName(username)
 
 	respondJSON(w, mcht)
 }
