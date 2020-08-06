@@ -389,32 +389,6 @@
                 "summary": "Login",
                 "description": "Log a user in",
                 "operationId": "auth/login",
-                "requestBody": {
-                    "description": "Additional meta-data for user account",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "account_type": {
-                                        "description": "Type of account",
-                                        "type": "string",
-                                        "enum": [
-                                            "merchant",
-                                            "customer"
-                                        ],
-                                        "default": "customer"
-                                    },
-                                    "account_name": {
-                                        "description": "Name should be supplied if type is merchant",
-                                        "type": "string",
-                                        "example": "Avis Car Rentals"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
                 "parameters": [
                     {
                         "name": "state_url",
@@ -425,6 +399,27 @@
                             "type": "string",
                             "format": "uri",
                             "example": "http://localhost:8080"
+                        }
+                    },
+                    {
+                        "name": "account_type",
+                        "in": "query",
+                        "description": "Type of account",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "merchant",
+                                "customer"
+                            ],
+                            "default": "customer"
+                        }
+                    },
+                    {
+                        "name": "account_name",
+                        "in": "query",
+                        "description": "Name should be supplied if account type is merchant",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
