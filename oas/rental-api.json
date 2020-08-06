@@ -395,6 +395,18 @@
                 }
             }
         },
+        "/auth/logout": {
+            "get": {
+                "summary": "Logout",
+                "description": "Log a user out",
+                "operationId": "auth/logout",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful"
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "get": {
                 "summary": "Login",
