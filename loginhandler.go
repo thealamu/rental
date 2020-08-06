@@ -11,34 +11,68 @@ import (
 
 var authRedirectURL = "http://localhost:8080/auth/login/callback"
 
-func handleLogin(w http.ResponseWriter, r *http.Request) {
-	tag := "handler.login"
-	//set the state
+var errNoAcctName = fmt.Errorf("Account name not set for merchant")
+
+const (
+	acctTypeCustomer = "customer"
+	acctTypeMerchant = "merchant"
+)
+
+func getRandomState() (string, error) {
 	b := make([]byte, 32)
 	_, err := rand.Read(b)
+	if err != nil {
+		return "", err
+	}
+	state := base64.StdEncoding.EncodeToString(b)
+	return state, nil
+}
+
+func saveLoginParams(state string, w http.ResponseWriter, r *http.Request) error {
+	session, err := store.Get(r, "auth-session")
+	if err != nil {
+		return err
+	}
+
+	session.Values["state"] = state
+	acctType := r.URL.Query().Get("account_type")
+	if acctType == "" {
+		//default account type is customer
+		acctType = acctTypeCustomer
+	}
+
+	acctName := r.URL.Query().Get("account_name")
+	if acctType == acctTypeMerchant && acctName == "" {
+		//account name is required for a merchant
+		return errNoAcctName
+	}
+
+	session.Values["account_type"] = acctType
+	session.Values["account_name"] = acctName
+	if err := session.Save(r, w); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func handleLogin(w http.ResponseWriter, r *http.Request) {
+	tag := "handler.login"
+
+	state, err := getRandomState()
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
 		respondError(tag, w, failCodeUnknown, "", http.StatusInternalServerError)
 		return
 	}
-	state := base64.StdEncoding.EncodeToString(b)
-	state, err = appendRedirURL(state, r)
-	if err != nil {
-		respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
-		return
-	}
 
-	session, err := store.Get(r, "auth-session")
+	err = saveLoginParams(state, w, r)
 	if err != nil {
-		log.Printf("%s: %v", tag, err)
-		respondError(tag, w, failCodeSessionDB, "Session store failure", http.StatusInternalServerError)
-		return
-	}
-
-	session.Values["state"] = state
-	if err := session.Save(r, w); err != nil {
-		log.Printf("%s: %v", tag, err)
-		respondError(tag, w, failCodeSessionDB, "Session store failure", http.StatusInternalServerError)
+		if err == errNoAcctName {
+			respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
+			return
+		}
+		respondError(tag, w, failCodeSessionDB, "", http.StatusInternalServerError)
 		return
 	}
 
