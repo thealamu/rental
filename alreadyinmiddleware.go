@@ -6,6 +6,7 @@ import "net/http"
 func alreadyLoggedIn(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		tag := "middleware.alreadyloggedin"
+
 		_, err := getProfileValue(r, "name")
 		if err == nil {
 			respondError(tag, w, failCodeBadParameter, "Already logged in", http.StatusBadRequest)

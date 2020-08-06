@@ -11,13 +11,19 @@ import (
 var authRedirectURL = "http://localhost:8080/auth/login/callback"
 
 var (
-	errNoAcctName = fmt.Errorf("Account name not set for merchant")
-	errNoStateUrl = fmt.Errorf("No state_url set")
+	errNoAcctName  = fmt.Errorf("Account name not set for merchant")
+	errNoStateURL  = fmt.Errorf("No state_url set")
+	errNoLoginType = fmt.Errorf("No login_type set")
 )
 
 const (
 	acctTypeCustomer = "customer"
 	acctTypeMerchant = "merchant"
+)
+
+const (
+	loginTypeLogin  = "login"
+	loginTypeSignup = "signup"
 )
 
 func getRandomState() (string, error) {
@@ -38,26 +44,36 @@ func saveLoginParams(state string, w http.ResponseWriter, r *http.Request) error
 
 	session.Values["state"] = state
 
+	loginType := r.URL.Query().Get("login_type")
+	if loginType == "" {
+		return errNoLoginType
+	}
+
 	stateURL := r.URL.Query().Get("state_url")
 	if stateURL == "" {
-		return errNoStateUrl
+		return errNoStateURL
 	}
 	session.Values["state_url"] = stateURL
 
-	acctType := r.URL.Query().Get("account_type")
-	if acctType == "" {
-		//default account type is customer
-		acctType = acctTypeCustomer
+	if loginType == loginTypeSignup {
+		acctType := r.URL.Query().Get("account_type")
+		if acctType == "" {
+			//default account type is customer
+			acctType = acctTypeCustomer
+		}
+
+		acctName := r.URL.Query().Get("account_name")
+		if acctType == acctTypeMerchant && acctName == "" {
+			//account name is required for a merchant
+			return errNoAcctName
+		}
+
+		session.Values["account_type"] = acctType
+		session.Values["account_name"] = acctName
 	}
 
-	acctName := r.URL.Query().Get("account_name")
-	if acctType == acctTypeMerchant && acctName == "" {
-		//account name is required for a merchant
-		return errNoAcctName
-	}
+	session.Values["login_type"] = loginType
 
-	session.Values["account_type"] = acctType
-	session.Values["account_name"] = acctName
 	if err := session.Save(r, w); err != nil {
 		return err
 	}
@@ -77,18 +93,19 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	err = saveLoginParams(state, w, r)
 	if err != nil {
-		if err == errNoAcctName || err == errNoStateUrl {
+		if err == errNoAcctName || err == errNoStateURL || err == errNoLoginType {
 			respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
 			return
 		}
-		respondError(tag, w, failCodeSessionDB, "", http.StatusInternalServerError)
+		log.Printf("%s: %v", tag, err)
+		respondError(tag, w, failCodeSessionDB, "Session failure", http.StatusInternalServerError)
 		return
 	}
 
 	authen, err := newAuthenticator()
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
-		respondError(tag, w, failCodeAuth, "Auth config failure", http.StatusInternalServerError)
+		respondError(tag, w, failCodeAuth, "Auth configuration failure", http.StatusInternalServerError)
 		return
 	}
 
@@ -113,7 +130,7 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 	authen, err := newAuthenticator()
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
-		respondError(tag, w, failCodeAuth, "Auth config failure", http.StatusInternalServerError)
+		respondError(tag, w, failCodeAuth, "Auth configuration failure", http.StatusInternalServerError)
 		return
 	}
 
@@ -160,6 +177,49 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		log.Printf("%s: state_url not set in session", tag)
 		return
+	}
+
+	loginType, ok := session.Values["login_type"].(string)
+	if !ok {
+		log.Printf("%s: login_type not set in sesion", tag)
+		return
+	}
+
+	if loginType == loginTypeLogin {
+		http.Redirect(w, r, stateURL, http.StatusTemporaryRedirect)
+		return
+	}
+
+	//trying to signup
+	db, err := newDatabase(defaultDbConfig)
+	if err != nil {
+		log.Printf("%s: %v", tag, err)
+		respondError(tag, w, failCodeDB, "", http.StatusInternalServerError)
+		return
+	}
+
+	acctType, ok := session.Values["account_type"].(string)
+	if !ok {
+		log.Printf("%s: account_type not set in session", tag)
+		return
+	}
+
+	if acctType == acctTypeCustomer {
+		//TODO: Do stuff
+	} else if acctType == acctTypeMerchant {
+		acctName, ok := session.Values["account_name"].(string)
+		if !ok {
+			log.Printf("%s: account_name not set in session", tag)
+			return
+		}
+		email, err := getProfileValue(r, "name")
+		if err != nil {
+			log.Printf("%s: %v", tag, err)
+			return
+		}
+		db.createMerchant(acctName, email)
+	} else {
+		log.Printf("%s: account_type %s not known", tag, acctType)
 	}
 
 	http.Redirect(w, r, stateURL, http.StatusTemporaryRedirect)
