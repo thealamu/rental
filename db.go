@@ -64,9 +64,9 @@ func (d database) createMerchant(email string, name string) {
 	d.gormDB.Create(&mcht)
 }
 
-func (d database) getMerchantForName(name string) (merchant, error) {
+func (d database) getMerchantForEmail(email string) (merchant, error) {
 	var mcht merchant
-	err := d.gormDB.First(&mcht, "name = ?", name).Error
+	err := d.gormDB.First(&mcht, "email = ?", email).Error
 	if err == gorm.ErrRecordNotFound {
 		err = errNotFound
 	}

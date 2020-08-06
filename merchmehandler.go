@@ -22,7 +22,7 @@ func getMerchantMe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Get merchant details from db
-	mcht, err := db.getMerchantForName(email)
+	mcht, err := db.getMerchantForEmail(email)
 	if err != nil {
 		if err == errNotFound {
 			//user is not a merchant
