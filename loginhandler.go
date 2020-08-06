@@ -209,7 +209,7 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 				log.Printf("%s: account_name not set in session", tag)
 				return
 			}
-			db.createMerchant(acctName, email)
+			db.createMerchant(email, acctName)
 		} else {
 			log.Printf("%s: account_type %s not known", tag, acctType)
 		}
