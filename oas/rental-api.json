@@ -391,6 +391,19 @@
                 "operationId": "auth/login",
                 "parameters": [
                     {
+                        "name": "login_type",
+                        "in": "query",
+                        "description": "Login type",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "login",
+                                "signup"
+                            ]
+                        }
+                    },
+                    {
                         "name": "state_url",
                         "in": "query",
                         "description": "Url to redirect to after a successful log in",
@@ -404,7 +417,7 @@
                     {
                         "name": "account_type",
                         "in": "query",
-                        "description": "Type of account",
+                        "description": "Type of account if login_type is signup",
                         "schema": {
                             "type": "string",
                             "enum": [
