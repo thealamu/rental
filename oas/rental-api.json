@@ -199,6 +199,10 @@
                     {
                         "type": "object",
                         "properties": {
+                            "email": {
+                                "type": "string",
+                                "example": "jdoe@gmail.com"
+                            },
                             "privateCars": {
                                 "description": "Number of cars the merchant has made private",
                                 "type": "integer",
@@ -385,6 +389,32 @@
                 "summary": "Login",
                 "description": "Log a user in",
                 "operationId": "auth/login",
+                "requestBody": {
+                    "description": "Additional meta-data for user account",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "account_type": {
+                                        "description": "Type of account",
+                                        "type": "string",
+                                        "enum": [
+                                            "merchant",
+                                            "customer"
+                                        ],
+                                        "default": "customer"
+                                    },
+                                    "account_name": {
+                                        "description": "Name should be supplied if type is merchant",
+                                        "type": "string",
+                                        "example": "Avis Car Rentals"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "parameters": [
                     {
                         "name": "state_url",
