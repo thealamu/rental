@@ -31,16 +31,16 @@ func getMerchantMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("%s: %s", tag, username)
-
-	//Verify user is a merchant
-	if !db.getMerchantExistsForName(username) {
-		log.Printf("%s: %v is not a merchant", tag, username)
-		respondError(tag, w, failCodeAuth, "Not a merchant", http.StatusForbidden)
-	}
+	log.Printf("%s: %s is logged in", tag, username)
 
 	//Get merchant details from db
 	mcht, err := db.getMerchantForName(username)
+	if mcht.Name == "" {
+		//user is not a merchant
+		log.Printf("%s: %v is not a merchant", tag, username)
+		respondError(tag, w, failCodeAuth, "Not a merchant", http.StatusForbidden)
+		return
+	}
 
 	respondJSON(w, mcht)
 }

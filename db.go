@@ -43,12 +43,6 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 	return
 }
 
-func (d database) getMerchantExistsForName(name string) bool {
-	var c int
-	d.gormDB.Model(&merchant{}).Where("name = ?", name).Count(&c)
-	return c > 0
-}
-
 func (d database) getMerchantForName(name string) (merchant, error) {
 	var mcht merchant
 	err := d.gormDB.First(&mcht, "name = ?", name).Error
