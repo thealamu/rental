@@ -43,6 +43,11 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 	return
 }
 
+func (d database) userExists(email string) bool {
+	errMerch := d.gormDB.First(&merchant{}, "email = ?", email).Error
+	return errMerch != gorm.ErrRecordNotFound
+}
+
 func (d database) createMerchant(email string, name string) {
 	mcht := merchant{
 		Email:       email,
