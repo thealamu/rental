@@ -9,32 +9,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func TestAppendRedirURL(t *testing.T) {
-	testState := "somestatedata"
-	testRequest, _ := http.NewRequest(http.MethodGet, "/auth/login/callback?state_url=somestateurl", nil)
-
-	appended, err := appendRedirURL(testState, testRequest)
-	if err != nil {
-		t.Errorf("appendRedirURL expected no error, got %v", err)
-	}
-
-	if appended != "somestatedata?state_url=somestateurl" {
-		t.Errorf("appendRedirURL returns wrong state string")
-	}
-
-	badRequest, _ := http.NewRequest(http.MethodGet, "/auth/login/callback", nil)
-	_, err = appendRedirURL(testState, badRequest)
-	if err == nil {
-		t.Errorf("appendRedirURL: expected an error, got nil")
-	}
-}
-
-func TestGetRedirURL(t *testing.T) {
-	if getRedirURL("some?state_url=data") != "data" {
-		t.Errorf("getRedirURL does not return correct state_url")
-	}
-}
-
 func TestHandleLogin(t *testing.T) {
 	os.Setenv(domainKey, "https://test-rental.us.auth0.com/")
 	testRequest, err := http.NewRequest(http.MethodGet, "/auth/login?state_url=someurl", nil)

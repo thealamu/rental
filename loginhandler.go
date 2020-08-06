@@ -6,12 +6,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 )
 
 var authRedirectURL = "http://localhost:8080/auth/login/callback"
 
-var errNoAcctName = fmt.Errorf("Account name not set for merchant")
+var (
+	errNoAcctName = fmt.Errorf("Account name not set for merchant")
+	errNoStateUrl = fmt.Errorf("No state_url set")
+)
 
 const (
 	acctTypeCustomer = "customer"
@@ -35,6 +37,13 @@ func saveLoginParams(state string, w http.ResponseWriter, r *http.Request) error
 	}
 
 	session.Values["state"] = state
+
+	stateURL := r.URL.Query().Get("state_url")
+	if stateURL == "" {
+		return errNoStateUrl
+	}
+	session.Values["state_url"] = stateURL
+
 	acctType := r.URL.Query().Get("account_type")
 	if acctType == "" {
 		//default account type is customer
@@ -68,7 +77,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	err = saveLoginParams(state, w, r)
 	if err != nil {
-		if err == errNoAcctName {
+		if err == errNoAcctName || err == errNoStateUrl {
 			respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -145,19 +154,13 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 		respondError(tag, w, failCodeAuth, "Auth Failure", http.StatusInternalServerError)
 		return
 	}
+	fmt.Println(profile)
 
-	//go to the redirect url inside state
-	http.Redirect(w, r, getRedirURL(stateQuery), http.StatusTemporaryRedirect)
-}
-
-func getRedirURL(state string) string {
-	return strings.Split(state, "?state_url=")[1]
-}
-
-func appendRedirURL(state string, r *http.Request) (string, error) {
-	redirURL := r.URL.Query().Get("state_url")
-	if redirURL == "" {
-		return "", fmt.Errorf("state_url not set")
+	stateURL, ok := session.Values["state_url"].(string)
+	if !ok {
+		log.Printf("%s: state_url not set in session", tag)
+		return
 	}
-	return state + "?state_url=" + redirURL, nil
+
+	http.Redirect(w, r, stateURL, http.StatusTemporaryRedirect)
 }
