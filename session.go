@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/gob"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -10,6 +11,12 @@ import (
 )
 
 var store *sessions.CookieStore
+
+var (
+	errStoreFailure       = fmt.Errorf("Session store failure")
+	errProfileNotFound    = fmt.Errorf("Profile not found")
+	errSessionKeyNotFound = fmt.Errorf("Session key not found")
+)
 
 func initSessionStore() {
 	gob.Register(map[string]interface{}{})
@@ -21,14 +28,24 @@ func initSessionStore() {
 	store = sessions.NewCookieStore([]byte(key))
 }
 
-func getSessionUsername(r *http.Request) string {
-	session, _ := store.Get(r, "auth-session")
+func getProfileValue(r *http.Request, key string) (string, error) {
+	session, err := store.Get(r, "auth-session")
+	if err != nil {
+		return "", errStoreFailure
+	}
 
-	profInterface, _ := session.Values["profile"]
-	usernameInterface, _ := profInterface.(map[string]interface{})["name"]
-	username, _ := usernameInterface.(string)
+	profInterface, ok := session.Values["profile"]
+	if !ok {
+		return "", errProfileNotFound
+	}
+	rawValue, ok := profInterface.(map[string]interface{})[key]
+	if !ok {
+		return "", errSessionKeyNotFound
+	}
+	value, ok := rawValue.(string)
+	if !ok {
+		return "", errSessionKeyNotFound
+	}
 
-	log.Printf("%s is logged in", username)
-
-	return username
+	return value, nil
 }
