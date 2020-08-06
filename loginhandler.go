@@ -179,18 +179,6 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loginType, ok := session.Values["login_type"].(string)
-	if !ok {
-		log.Printf("%s: login_type not set in sesion", tag)
-		return
-	}
-
-	if loginType == loginTypeLogin {
-		http.Redirect(w, r, stateURL, http.StatusTemporaryRedirect)
-		return
-	}
-
-	//trying to signup
 	email, err := getProfileValue(r, "email")
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
@@ -204,25 +192,28 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	acctType, ok := session.Values["account_type"].(string)
-	if !ok {
-		log.Printf("%s: account_type not set in session", tag)
-		return
-	}
+	//check if user exists, if not create the user
+	if !db.userExists(email) {
 
-	if acctType == acctTypeCustomer {
-		//TODO: Do stuff
-	} else if acctType == acctTypeMerchant {
-		acctName, ok := session.Values["account_name"].(string)
+		acctType, ok := session.Values["account_type"].(string)
 		if !ok {
-			log.Printf("%s: account_name not set in session", tag)
+			log.Printf("%s: account_type not set in session", tag)
 			return
 		}
 
-		db.createMerchant(acctName, email)
+		if acctType == acctTypeCustomer {
+			db.createCustomer(email)
+		} else if acctType == acctTypeMerchant {
+			acctName, ok := session.Values["account_name"].(string)
+			if !ok {
+				log.Printf("%s: account_name not set in session", tag)
+				return
+			}
+			db.createMerchant(acctName, email)
+		} else {
+			log.Printf("%s: account_type %s not known", tag, acctType)
+		}
 
-	} else {
-		log.Printf("%s: account_type %s not known", tag, acctType)
 	}
 
 	http.Redirect(w, r, stateURL, http.StatusTemporaryRedirect)
