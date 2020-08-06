@@ -47,7 +47,7 @@ func newAuthenticator() (*authenticator, error) {
 		ClientSecret: clientSecret,
 		RedirectURL:  authRedirectURL,
 		Endpoint:     prov.Endpoint(),
-		Scopes:       []string{oidc.ScopeOpenID, "profile"},
+		Scopes:       []string{oidc.ScopeOpenID, "email", "profile"},
 	}
 
 	oidcConfig := &oidc.Config{

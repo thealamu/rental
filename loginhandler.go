@@ -191,6 +191,12 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//trying to signup
+	email, err := getProfileValue(r, "email")
+	if err != nil {
+		log.Printf("%s: %v", tag, err)
+		return
+	}
+
 	db, err := newDatabase(defaultDbConfig)
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
@@ -212,12 +218,9 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 			log.Printf("%s: account_name not set in session", tag)
 			return
 		}
-		email, err := getProfileValue(r, "name")
-		if err != nil {
-			log.Printf("%s: %v", tag, err)
-			return
-		}
+
 		db.createMerchant(acctName, email)
+
 	} else {
 		log.Printf("%s: account_type %s not known", tag, acctType)
 	}
