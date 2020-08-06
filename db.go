@@ -43,6 +43,11 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 	return
 }
 
+func (d database) createCustomer(email string) {
+	cust := customer{Email: email}
+	d.gormDB.Create(&cust)
+}
+
 func (d database) userExists(email string) bool {
 	errMerch := d.gormDB.First(&merchant{}, "email = ?", email).Error
 	return errMerch != gorm.ErrRecordNotFound
@@ -111,7 +116,7 @@ func setupGDB(dialect, dbURI string) error {
 		return err
 	}
 	gdb = conn
-	gdb.AutoMigrate(&car{}, &merchant{})
+	gdb.AutoMigrate(&car{}, &merchant{}, &customer{})
 
 	return nil
 }
