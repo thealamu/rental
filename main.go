@@ -47,6 +47,7 @@ func main() {
 	authRouter := router.PathPrefix("/auth").Subrouter()
 	authRouter.HandleFunc("/login", handleLogin)
 	authRouter.HandleFunc("/login/callback", handleLoginCallback)
+	authRouter.Use(alreadyLoggedIn)
 
 	//Wrap the root router with one that logs every request
 	loggingRouter := handlers.LoggingHandler(os.Stdout, router)
