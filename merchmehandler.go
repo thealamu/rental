@@ -14,7 +14,7 @@ func getMerchantMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username, err := getProfileValue(r, "name")
+	email, err := getProfileValue(r, "email")
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
 		respondError(tag, w, failCodeSessionDB, "", http.StatusInternalServerError)
@@ -22,11 +22,11 @@ func getMerchantMe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Get merchant details from db
-	mcht, err := db.getMerchantForName(username)
+	mcht, err := db.getMerchantForName(email)
 	if err != nil {
 		if err == errNotFound {
 			//user is not a merchant
-			log.Printf("%s: %v is not a merchant", tag, username)
+			log.Printf("%s: %v is not a merchant", tag, email)
 			respondError(tag, w, failCodeAuth, "Not a merchant", http.StatusForbidden)
 			return
 		}

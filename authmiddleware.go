@@ -9,7 +9,7 @@ func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		tag := "middleware.auth"
 
-		_, err := getProfileValue(r, "name")
+		_, err := getProfileValue(r, "email")
 		if err != nil {
 			if err == errStoreFailure {
 				log.Printf("%s: %v", tag, err)
