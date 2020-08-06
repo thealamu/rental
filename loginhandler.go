@@ -171,7 +171,6 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 		respondError(tag, w, failCodeAuth, "Auth Failure", http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(profile)
 
 	stateURL, ok := session.Values["state_url"].(string)
 	if !ok {
@@ -184,6 +183,7 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%s: %v", tag, err)
 		return
 	}
+	log.Printf("%s: %s logged in", tag, email)
 
 	db, err := newDatabase(defaultDbConfig)
 	if err != nil {
