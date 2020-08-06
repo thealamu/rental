@@ -6,14 +6,15 @@ const merchantsTableName = "merchants"
 
 type merchant struct {
 	gorm.Model
-	Name        string `gorm:"PRIMARY_KEY"`
+	Email       string `gorm:"primary_key"`
+	Name        string
 	Website     string
 	PublicCars  int
 	PrivateCars int
 }
 
 type minimalMerchant struct {
-	Name       string `gorm:"primary_key"`
+	Name       string
 	Website    string
 	PublicCars int
 }
