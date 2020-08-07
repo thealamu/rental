@@ -30,6 +30,42 @@ type authenticator struct {
 	ctx         context.Context
 }
 
+func newLogoutURL(r *http.Request) (*url.URL, error) {
+	domain := os.Getenv(domainKey)
+	if domain == "" {
+		return nil, errNoDomain
+	}
+
+	logoutURL, err := url.Parse(domain)
+	if err != nil {
+		return nil, err
+	}
+
+	logoutURL.Path += "v2/logout"
+	parameters := url.Values{}
+
+	var scheme string
+	if r.TLS == nil {
+		scheme = "http"
+	} else {
+		scheme = "https"
+	}
+
+	returnTo, err := url.Parse(scheme + "://" + r.Host)
+	if err != nil {
+		return nil, err
+	}
+
+	clientID := os.Getenv(clientIDKey)
+
+	parameters.Add("returnTo", returnTo.String())
+	parameters.Add("client_id", clientID)
+
+	logoutURL.RawQuery = parameters.Encode()
+
+	return logoutURL, nil
+}
+
 func newAuthenticator(r *http.Request) (*authenticator, error) {
 	ctx := context.Background()
 
