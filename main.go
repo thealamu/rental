@@ -46,6 +46,7 @@ func main() {
 	//Path /customers/me
 	custmeRouter := router.PathPrefix("/customers/me").Subrouter()
 	custmeRouter.HandleFunc("", getCustomerMe)
+	custmeRouter.Use(authMiddleware)
 
 	//Path /auth/login
 	authRouter := router.PathPrefix("/auth").Subrouter()
