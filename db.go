@@ -43,6 +43,11 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 	return
 }
 
+func (d database) createMerchantCar(c *car) error {
+	err := d.gormDB.Create(c).Error
+	return err
+}
+
 func (d database) getAuthedMerchantCars(mchtName string) []car {
 	var cars []car
 	d.gormDB.Find(&cars, "merchant = ?", mchtName)
