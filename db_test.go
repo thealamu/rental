@@ -11,6 +11,24 @@ var testDBConfig = &dbconfig{
 	dbURI:   "file::memory:?cache=shared",
 }
 
+func TestGetNextCarID(t *testing.T) {
+	db, err := newDatabase(testDBConfig)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var testCar car
+	testCar.Name = "Test"
+	testCar.ID = 1
+
+	db.gormDB.Create(&testCar)
+
+	next := db.getNextCarID()
+	if next != 2 {
+		t.Errorf("Expected next car ID 2, got %d", next)
+	}
+}
+
 func TestGetMerchantForEmail(t *testing.T) {
 	db, err := newDatabase(testDBConfig)
 	if err != nil {

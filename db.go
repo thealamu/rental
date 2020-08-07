@@ -43,6 +43,15 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 	return
 }
 
+func (d database) getNextCarID() uint {
+	var lastCar car
+	err := d.gormDB.Last(&lastCar).Error
+	if err != nil {
+		return 0
+	}
+	return lastCar.ID + 1
+}
+
 func (d database) createMerchantCar(c *car) error {
 	err := d.gormDB.Create(c).Error
 	return err
