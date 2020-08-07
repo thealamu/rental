@@ -63,6 +63,11 @@ func (d database) createCustomer(email string) {
 	d.gormDB.Create(&cust)
 }
 
+func (d database) mchtAccountNameExists(name string) bool {
+	errMerch := d.gormDB.First(&merchant{}, "name = ?", name).Error
+	return errMerch != gorm.ErrRecordNotFound
+}
+
 func (d database) userExists(email string) bool {
 	errMerch := d.gormDB.First(&merchant{}, "email = ?", email).Error
 	errCust := d.gormDB.First(&customer{}, "email = ?", email).Error
