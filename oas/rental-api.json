@@ -87,6 +87,10 @@
                     "convertible": {
                         "description": "Denotes if car is convertible",
                         "type": "boolean"
+                    },
+                    "merchant": {
+                        "description": "Name of the merchant offering this car",
+                        "type": "string"
                     }
                 },
                 "required": [

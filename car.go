@@ -18,6 +18,7 @@ type car struct {
 	Electric     bool   `json:"electric"`
 	Convertible  bool   `json:"convertible"`
 	IsPublic     bool   `json:"isPublic" gorm:"default:true"`
+	Merchant     string `json:"merchant"`
 }
 
 //publicCar holds the minimum details any user cares about
@@ -34,6 +35,7 @@ type publicCar struct {
 	AC           bool   `json:"ac"`
 	Electric     bool   `json:"electric"`
 	Convertible  bool   `json:"convertible"`
+	Merchant     string `json:"merchant"`
 }
 
 type charge struct {
