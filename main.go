@@ -41,6 +41,8 @@ func main() {
 	//path /merchants/me/cars
 	merchmeRouter.HandleFunc("/cars", getMerchantMeCars).Methods(http.MethodGet)
 	merchmeRouter.HandleFunc("/cars", createMerchantMeCar).Methods(http.MethodPost)
+	//path /merchants/me/cars/{car_id}
+	merchmeRouter.HandleFunc("/cars/{car_id:[0-9]+}", getMerchantMeSingleCar).Methods(http.MethodGet)
 	merchmeRouter.Use(authMiddleware)
 
 	//Path /merchants/{merchant}
