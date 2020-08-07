@@ -403,7 +403,11 @@
             "get": {
                 "summary": "Authed Merchant Cars",
                 "description": "Get cars of an authed merchant",
-                "operationId": "merchants/account/cars",
+                "operationId": "merchants/account-cars",
+                "tags": [
+                    "merchant",
+                    "car"
+                ],
                 "responses": {
                     "200": {
                         "description": "response",
@@ -418,6 +422,44 @@
                             }
                         }
                     }
+                }
+            },
+            "post": {
+                "summary": "Create merchant car",
+                "description": "Create a car for authed merchant",
+                "operationId": "merchants/add-account-car",
+                "tags": [
+                    "merchant",
+                    "car"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/car"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "response",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "$ref": "#/components/schemas/car"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                }
+                            }
+                        }
+                    }   
                 }
             }
         },
