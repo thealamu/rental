@@ -54,6 +54,9 @@ func main() {
 	authRouter.HandleFunc("/login/callback", handleLoginCallback)
 	authRouter.Use(alreadyLoggedIn)
 
+	//Path /cars/search
+	router.HandleFunc("/cars/search", handleCarsSearch)
+
 	//Wrap the root router with one that logs every request
 	loggingRouter := handlers.LoggingHandler(os.Stdout, router)
 
