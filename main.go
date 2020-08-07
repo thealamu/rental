@@ -43,6 +43,10 @@ func main() {
 	//Path /merchants/{merchant}
 	router.HandleFunc("/merchants/{merchant:[a-zA-Z ]+}", getSingleMiniMerchant)
 
+	//Path /customers/me
+	custmeRouter := router.PathPrefix("/customers/me").Subrouter()
+	custmeRouter.HandleFunc("", getCustomerMe)
+
 	//Path /auth/login
 	authRouter := router.PathPrefix("/auth").Subrouter()
 	authRouter.HandleFunc("/login", handleLogin)
