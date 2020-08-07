@@ -43,6 +43,15 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 	return
 }
 
+func (d database) searchPublicCars(query string) []publicCar {
+	var pubCars []publicCar
+	whereVal := fmt.Sprintf("%%%s%%", query)
+	d.gormDB.Table(carsTableName).
+		Where("is_public = ?", true).
+		Find(&pubCars, "name LIKE ? OR make LIKE ?", whereVal, whereVal)
+	return pubCars
+}
+
 func (d database) createCustomer(email string) {
 	cust := customer{Email: email}
 	d.gormDB.Create(&cust)
