@@ -5,7 +5,52 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
+
+func getMerchantMeSingleCar(w http.ResponseWriter, r *http.Request) {
+	tag := "handler.merchantcar"
+
+	db, err := newDatabase(defaultDbConfig)
+	if err != nil {
+		respondError(tag, w, failCodeDB, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	param := mux.Vars(r)["car_id"]
+	paramCarID, err := strconv.Atoi(param)
+	if err != nil {
+		//err should usually be nil because the router enforces the constraints
+		//for a car id.
+		//bad car id
+		respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	email, err := getProfileValue(r, "email")
+	if err != nil {
+		respondError(tag, w, failCodeSessionDB, err.Error(), http.StatusInternalServerError)
+	}
+
+	mcht, err := db.getMerchantForEmail(email)
+	if err != nil {
+		respondError(tag, w, failCodeDB, err.Error(), http.StatusInternalServerError)
+	}
+
+	mchtCar, err := db.getMerchantCarForID(mcht.Name, uint(paramCarID))
+	if err != nil {
+		rspErr := http.StatusInternalServerError
+		if err == errNotFound {
+			rspErr = http.StatusNotFound
+		}
+		respondError(tag, w, failCodeBadParameter, err.Error(), rspErr)
+		return
+	}
+
+	respondJSON(w, mchtCar)
+}
 
 func createMerchantMeCar(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.merchantmecreatecar"
