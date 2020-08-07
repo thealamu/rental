@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -22,6 +23,8 @@ func createMerchantMeCar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	carItem.ID = db.getNextCarID()
+
 	err = verifyCarItem(&carItem)
 	if err != nil {
 		respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
@@ -34,6 +37,13 @@ func createMerchantMeCar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	host, err := getHost(r)
+	if err != nil {
+		respondError(tag, w, failCodeUnknown, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Location", fmt.Sprintf("%s/merchants/me/cars/%d", host, carItem.ID))
 	respondJSON(w, carItem)
 }
 
