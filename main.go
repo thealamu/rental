@@ -40,6 +40,7 @@ func main() {
 	merchmeRouter.HandleFunc("", getMerchantMe)
 	//path /merchants/me/cars
 	merchmeRouter.HandleFunc("/cars", getMerchantMeCars).Methods(http.MethodGet)
+	merchmeRouter.HandleFunc("/cars", createMerchantMeCar).Methods(http.MethodPost)
 	merchmeRouter.Use(authMiddleware)
 
 	//Path /merchants/{merchant}
