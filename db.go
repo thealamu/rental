@@ -43,6 +43,12 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 	return
 }
 
+func (d database) getAuthedMerchantCars(mchtName string) []car {
+	var cars []car
+	d.gormDB.Find(&cars, "merchant = ?", mchtName)
+	return cars
+}
+
 func (d database) searchPublicCars(query string) []publicCar {
 	var pubCars []publicCar
 	whereVal := fmt.Sprintf("%%%s%%", query)
