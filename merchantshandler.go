@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -11,8 +10,7 @@ func getSingleMiniMerchant(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.merchant"
 	db, err := newDatabase(defaultDbConfig)
 	if err != nil {
-		log.Printf("%s: %v", tag, err)
-		respondError(tag, w, failCodeDB, "", http.StatusInternalServerError)
+		respondError(tag, w, failCodeDB, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

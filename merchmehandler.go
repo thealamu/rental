@@ -59,8 +59,7 @@ func getMerchantMeCars(w http.ResponseWriter, r *http.Request) {
 
 	email, err := getProfileValue(r, "email")
 	if err != nil {
-		log.Printf("%s: %v", tag, err)
-		respondError(tag, w, failCodeSessionDB, "", http.StatusInternalServerError)
+		respondError(tag, w, failCodeSessionDB, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -69,7 +68,6 @@ func getMerchantMeCars(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err == errNotFound {
 			//user is not a merchant
-			log.Printf("%s: %v is not a merchant", tag, email)
 			respondError(tag, w, failCodeAuth, "Not a merchant", http.StatusForbidden)
 			return
 		}
@@ -84,15 +82,13 @@ func getMerchantMe(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.merchantme"
 	db, err := newDatabase(defaultDbConfig)
 	if err != nil {
-		log.Printf("%s: %v", tag, err)
-		respondError(tag, w, failCodeDB, "", http.StatusInternalServerError)
+		respondError(tag, w, failCodeDB, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	email, err := getProfileValue(r, "email")
 	if err != nil {
-		log.Printf("%s: %v", tag, err)
-		respondError(tag, w, failCodeSessionDB, "", http.StatusInternalServerError)
+		respondError(tag, w, failCodeSessionDB, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -101,7 +97,6 @@ func getMerchantMe(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err == errNotFound {
 			//user is not a merchant
-			log.Printf("%s: %v is not a merchant", tag, email)
 			respondError(tag, w, failCodeAuth, "Not a merchant", http.StatusForbidden)
 			return
 		}

@@ -90,21 +90,17 @@ func newAuthenticator(r *http.Request) (*authenticator, error) {
 	clientID := os.Getenv(clientIDKey)
 	clientSecret := os.Getenv(clientSecKey)
 
-	var scheme string
-	if r.TLS == nil {
-		scheme = "http"
-	} else {
-		scheme = "https"
-	}
-	authRedirectURL, err := url.Parse(scheme + "://" + r.Host + authRedirectPath)
+	host, err := getHost(r)
 	if err != nil {
 		return nil, err
 	}
 
+	authRedirectURL := host + authRedirectPath
+
 	conf := oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
-		RedirectURL:  authRedirectURL.String(),
+		RedirectURL:  authRedirectURL,
 		Endpoint:     prov.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID, "email", "profile"},
 	}
