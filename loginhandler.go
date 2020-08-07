@@ -11,9 +11,10 @@ import (
 var authRedirectPath = "/auth/login/callback"
 
 var (
-	errNoAcctName  = fmt.Errorf("Account name not set for merchant")
-	errNoStateURL  = fmt.Errorf("No state_url set")
-	errNoLoginType = fmt.Errorf("No login_type set")
+	errNoAcctName     = fmt.Errorf("Account name not set for merchant")
+	errNoStateURL     = fmt.Errorf("No state_url set")
+	errNoLoginType    = fmt.Errorf("No login_type set")
+	errMchtAcctExists = fmt.Errorf("Merchant with that name exists")
 )
 
 const (
@@ -37,6 +38,12 @@ func getRandomState() (string, error) {
 }
 
 func saveLoginParams(state string, w http.ResponseWriter, r *http.Request) error {
+	//ensure account name does not exist already
+	db, err := newDatabase(defaultDbConfig)
+	if err != nil {
+		return err
+	}
+
 	session, err := store.Get(r, "auth-session")
 	if err != nil {
 		return err
@@ -68,6 +75,10 @@ func saveLoginParams(state string, w http.ResponseWriter, r *http.Request) error
 			return errNoAcctName
 		}
 
+		if db.mchtAccountNameExists(acctName) {
+			return errMchtAcctExists
+		}
+
 		session.Values["account_type"] = acctType
 		session.Values["account_name"] = acctName
 	}
@@ -93,7 +104,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	err = saveLoginParams(state, w, r)
 	if err != nil {
-		if err == errNoAcctName || err == errNoStateURL || err == errNoLoginType {
+		if err == errNoAcctName || err == errNoStateURL || err == errNoLoginType || err == errMchtAcctExists {
 			respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
 			return
 		}
