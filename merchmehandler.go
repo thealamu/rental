@@ -43,6 +43,18 @@ func createMerchantMeCar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	name, err := getProfileValue(r, "name")
+	if err != nil {
+		respondError(tag, w, failCodeSessionDB, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = db.updateMerchantCarCount(name, carItem.IsPublic)
+	if err != nil {
+		respondError(tag, w, failCodeDB, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Add("Location", fmt.Sprintf("%s/merchants/me/cars/%d", host, carItem.ID))
 	w.WriteHeader(http.StatusCreated)
 	respondJSON(w, carItem)
