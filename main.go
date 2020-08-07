@@ -43,6 +43,11 @@ func main() {
 	//Path /merchants/{merchant}
 	router.HandleFunc("/merchants/{merchant:[a-zA-Z ]+}", getSingleMiniMerchant)
 
+	//Path /customers/me
+	custmeRouter := router.PathPrefix("/customers/me").Subrouter()
+	custmeRouter.HandleFunc("", getCustomerMe)
+	custmeRouter.Use(authMiddleware)
+
 	//Path /auth/login
 	loginRouter := router.PathPrefix("/auth/login").Subrouter()
 	loginRouter.HandleFunc("", handleLogin)
@@ -53,6 +58,9 @@ func main() {
 	logoutRouter := router.PathPrefix("/auth/logout").Subrouter()
 	logoutRouter.HandleFunc("", handleLogout)
 	logoutRouter.Use(authMiddleware)
+
+	//Path /cars/search
+	router.HandleFunc("/cars/search", handleCarsSearch)
 
 	//Wrap the root router with one that logs every request
 	loggingRouter := handlers.LoggingHandler(os.Stdout, router)
