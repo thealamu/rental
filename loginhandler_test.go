@@ -11,7 +11,7 @@ import (
 
 func TestHandleLogin(t *testing.T) {
 	os.Setenv(domainKey, "https://test-rental.us.auth0.com/")
-	testRequest, err := http.NewRequest(http.MethodGet, "/auth/login?state_url=someurl", nil)
+	testRequest, err := http.NewRequest(http.MethodGet, "/auth/login?state_url=someurl&login_type=login", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -44,7 +44,7 @@ func TestHandleLogin(t *testing.T) {
 
 	//test bad authenticator
 	os.Setenv(domainKey, "baddomain.bad")
-	badDomainRequest, err := http.NewRequest(http.MethodGet, "/auth/login?state_url=someurl", nil)
+	badDomainRequest, err := http.NewRequest(http.MethodGet, "/auth/login?state_url=someurl&login_type=login", nil)
 	if err != nil {
 		t.Error(err)
 	}

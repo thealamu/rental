@@ -19,13 +19,13 @@ func TestGetNextCarID(t *testing.T) {
 
 	var testCar car
 	testCar.Name = "Test"
-	testCar.ID = 1
+	testCar.ID = 180
 
 	db.gormDB.Create(&testCar)
 
 	next := db.getNextCarID()
-	if next != 2 {
-		t.Errorf("Expected next car ID 2, got %d", next)
+	if next != 181 {
+		t.Errorf("Expected next car ID 181, got %d", next)
 	}
 }
 

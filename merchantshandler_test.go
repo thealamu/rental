@@ -10,6 +10,7 @@ import (
 
 func TestGetSingleMiniMerchant(t *testing.T) {
 	//test 500 for db error
+	gdb = nil
 	defaultDbConfig = &dbconfig{dialect: "mysql", dbURI: "''@stuff"}
 	testRequest, _ := http.NewRequest(http.MethodGet, "/merchants/somemerch", nil)
 
