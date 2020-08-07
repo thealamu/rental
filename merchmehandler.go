@@ -44,6 +44,7 @@ func createMerchantMeCar(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Location", fmt.Sprintf("%s/merchants/me/cars/%d", host, carItem.ID))
+	w.WriteHeader(http.StatusCreated)
 	respondJSON(w, carItem)
 }
 
