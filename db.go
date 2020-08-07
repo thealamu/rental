@@ -52,6 +52,20 @@ func (d database) getNextCarID() uint {
 	return lastCar.ID + 1
 }
 
+//update the public and private car counts for merchant
+func (d database) updateMerchantCarCount(mchtName string, isPublic bool) error {
+	var colName = "private_cars"
+	if isPublic {
+		colName = "public_cars"
+	}
+
+	err := d.gormDB.Model(&merchant{}).
+		Where("name = ?", mchtName).
+		Update(colName, gorm.Expr(colName+" + ?", 1)).Error
+
+	return err
+}
+
 func (d database) createMerchantCar(c *car) error {
 	err := d.gormDB.Create(c).Error
 	return err

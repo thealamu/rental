@@ -11,6 +11,29 @@ var testDBConfig = &dbconfig{
 	dbURI:   "file::memory:?cache=shared",
 }
 
+func TestUpdateMerchantCarCount(t *testing.T) {
+	db, err := newDatabase(testDBConfig)
+	if err != nil {
+		t.Error(err)
+	}
+
+	db.createMerchant("some@mail.com", "some name")
+
+	err = db.updateMerchantCarCount("some name", true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	mcht, err := db.getMerchantForEmail("some@mail.com")
+	if err != nil {
+		t.Error(err)
+	}
+
+	if mcht.PublicCars != 1 {
+		t.Errorf("Expected merchant pubilc car count to be 1, got %d", mcht.PublicCars)
+	}
+}
+
 func TestGetNextCarID(t *testing.T) {
 	db, err := newDatabase(testDBConfig)
 	if err != nil {
