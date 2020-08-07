@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"net/url"
 	"os"
 
 	oidc "github.com/coreos/go-oidc"
@@ -28,7 +30,7 @@ type authenticator struct {
 	ctx         context.Context
 }
 
-func newAuthenticator() (*authenticator, error) {
+func newAuthenticator(r *http.Request) (*authenticator, error) {
 	ctx := context.Background()
 
 	domain := os.Getenv(domainKey)
@@ -42,10 +44,22 @@ func newAuthenticator() (*authenticator, error) {
 
 	clientID := os.Getenv(clientIDKey)
 	clientSecret := os.Getenv(clientSecKey)
+
+	var scheme string
+	if r.TLS == nil {
+		scheme = "http"
+	} else {
+		scheme = "https"
+	}
+	authRedirectURL, err := url.Parse(scheme + "://" + r.Host + authRedirectPath)
+	if err != nil {
+		return nil, err
+	}
+
 	conf := oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
-		RedirectURL:  authRedirectURL,
+		RedirectURL:  authRedirectURL.String(),
 		Endpoint:     prov.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID, "email", "profile"},
 	}

@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-var authRedirectURL = "http://localhost:8080/auth/login/callback"
+var authRedirectPath = "/auth/login/callback"
 
 var (
 	errNoAcctName  = fmt.Errorf("Account name not set for merchant")
@@ -102,7 +102,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authen, err := newAuthenticator()
+	authen, err := newAuthenticator(r)
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
 		respondError(tag, w, failCodeAuth, "Auth configuration failure", http.StatusInternalServerError)
@@ -127,7 +127,7 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authen, err := newAuthenticator()
+	authen, err := newAuthenticator(r)
 	if err != nil {
 		log.Printf("%s: %v", tag, err)
 		respondError(tag, w, failCodeAuth, "Auth configuration failure", http.StatusInternalServerError)
