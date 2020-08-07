@@ -38,6 +38,8 @@ func main() {
 	//must match this before /merchants/{merchant}
 	merchmeRouter := router.PathPrefix("/merchants/me").Subrouter()
 	merchmeRouter.HandleFunc("", getMerchantMe)
+	//path /merchants/me/cars
+	merchmeRouter.HandleFunc("/cars", getMerchantMeCars).Methods(http.MethodGet)
 	merchmeRouter.Use(authMiddleware)
 
 	//Path /merchants/{merchant}

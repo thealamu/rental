@@ -5,6 +5,10 @@ import (
 	"net/http"
 )
 
+func getMerchantMeCars(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func getMerchantMe(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.merchantme"
 	db, err := newDatabase(defaultDbConfig)
