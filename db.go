@@ -43,6 +43,18 @@ func newDatabase(config *dbconfig) (ret database, err error) {
 	return
 }
 
+//getMerchantCarForID returns a car with the specified ID
+func (d database) getMerchantCarForID(mchtName string, carID uint) (car, error) {
+	var mchtCar car
+	err := d.gormDB.
+		Where("ID = ? AND merchant = ?", carID, mchtName).
+		First(&mchtCar).Error
+	if err == gorm.ErrRecordNotFound {
+		err = errNotFound
+	}
+	return mchtCar, err
+}
+
 func (d database) getNextCarID() uint {
 	var lastCar car
 	err := d.gormDB.Last(&lastCar).Error

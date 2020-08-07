@@ -11,6 +11,34 @@ var testDBConfig = &dbconfig{
 	dbURI:   "file::memory:?cache=shared",
 }
 
+func TestGetMerchantCarForID(t *testing.T) {
+	db, err := newDatabase(testDBConfig)
+	if err != nil {
+		t.Error(err)
+	}
+
+	//init
+	var firstCar car
+	firstCar.ID = 11
+	var testCar car
+	testCar.ID = 12
+	testCar.Merchant = "Some Merchant"
+
+	//insert
+	db.gormDB.Create(&firstCar)
+	db.gormDB.Create(&testCar)
+	//read
+	savedCar, err := db.getMerchantCarForID("Some Merchant", testCar.ID)
+	if err != nil {
+		t.Error(err)
+	}
+
+	//validate
+	if savedCar.ID != testCar.ID {
+		t.Errorf("getMerchantCarForID returns incorrect car, expected car with ID %d, got ID %d", testCar.ID, savedCar.ID)
+	}
+}
+
 func TestUpdateMerchantCarCount(t *testing.T) {
 	db, err := newDatabase(testDBConfig)
 	if err != nil {
