@@ -61,7 +61,8 @@
                         "enum": [
                             "automatic",
                             "manual"
-                        ]
+                        ],
+                        "default": "manual"
                     },
                     "seatCount": {
                         "description": "Number of seats in the car",
@@ -94,10 +95,11 @@
                     }
                 },
                 "required": [
-                    "id",
                     "name",
                     "description",
-                    "charge"
+                    "charge",
+                    "make",
+                    "merchant"
                 ]
             },
             "car": {
