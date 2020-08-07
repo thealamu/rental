@@ -20,6 +20,13 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//Invalidate the session
+	err = invalidateSession(r, w)
+	if err != nil {
+		respondError(tag, w, failCodeSessionDB, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	log.Printf("%s: %s logged out", tag, email)
 
 	http.Redirect(w, r, logoutURL.String(), http.StatusTemporaryRedirect)

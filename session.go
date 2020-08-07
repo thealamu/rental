@@ -28,6 +28,17 @@ func initSessionStore() {
 	store = sessions.NewCookieStore([]byte(key))
 }
 
+func invalidateSession(r *http.Request, w http.ResponseWriter) error {
+	session, err := store.Get(r, "auth-session")
+	if err != nil {
+		return errStoreFailure
+	}
+
+	session.Options.MaxAge = -1
+
+	return session.Save(r, w)
+}
+
 func getProfileValue(r *http.Request, key string) (string, error) {
 	session, err := store.Get(r, "auth-session")
 	if err != nil {
