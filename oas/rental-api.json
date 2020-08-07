@@ -401,9 +401,37 @@
                 }
             }
         },
+        "/merchants/me/cars/{car_id}": {
+            "get": {
+                "summary": "Authed merchant car",
+                "description": "Get an authed merchant's car with car_id",
+                "operationId": "merchants/account-single-car",
+                "tags": [
+                    "car",
+                    "merchant"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/car-id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/car"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/merchants/me/cars": {
             "get": {
-                "summary": "Authed Merchant Cars",
+                "summary": "Authed merchant cars",
                 "description": "Get cars of an authed merchant",
                 "operationId": "merchants/account-cars",
                 "tags": [
