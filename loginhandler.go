@@ -197,8 +197,8 @@ func handleLoginCallback(w http.ResponseWriter, r *http.Request) {
 
 		acctType, ok := session.Values["account_type"].(string)
 		if !ok {
-			log.Printf("%s: account_type not set in session", tag)
-			return
+			//default to customer account
+			acctType = acctTypeCustomer
 		}
 
 		if acctType == acctTypeCustomer {
