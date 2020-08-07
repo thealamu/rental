@@ -6,11 +6,11 @@ const carsTableName = "cars"
 
 type car struct {
 	gorm.Model
-	Name         string `json:"name" gorm:"not null"`
-	Description  string `json:"description" gorm:"not null"`
-	Charge       charge `json:"charge" gorm:"embedded;not null"`
-	Make         string `json:"make" gorm:"not null;default:'manual'"`
-	Transmission string `json:"transmission"`
+	Name         string `json:"name"`
+	Description  string `json:"description"`
+	Charge       charge `json:"charge" gorm:"embedded"`
+	Make         string `json:"make"`
+	Transmission string `json:"transmission" gorm:"default:'manual'"`
 	SeatCount    int    `json:"seatCount"`
 	ImgURL       string `json:"imgUrl"`
 	Color        string `json:"color"`
@@ -18,7 +18,7 @@ type car struct {
 	Electric     bool   `json:"electric"`
 	Convertible  bool   `json:"convertible"`
 	IsPublic     bool   `json:"isPublic" gorm:"default:true"`
-	Merchant     string `json:"merchant" gorm:"not null"`
+	Merchant     string `json:"merchant"`
 }
 
 //publicCar holds the minimum details any user cares about

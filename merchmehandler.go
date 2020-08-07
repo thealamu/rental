@@ -22,6 +22,12 @@ func createMerchantMeCar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = verifyCarItem(&carItem)
+	if err != nil {
+		respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	err = db.createMerchantCar(&carItem)
 	if err != nil {
 		respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
