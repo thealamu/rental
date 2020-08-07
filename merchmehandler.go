@@ -43,13 +43,13 @@ func createMerchantMeCar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	name, err := getProfileValue(r, "name")
+	email, err := getProfileValue(r, "email")
 	if err != nil {
 		respondError(tag, w, failCodeSessionDB, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	err = db.updateMerchantCarCount(name, carItem.IsPublic)
+	err = db.updateMerchantCarCount(email, carItem.IsPublic)
 	if err != nil {
 		respondError(tag, w, failCodeDB, err.Error(), http.StatusInternalServerError)
 		return

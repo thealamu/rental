@@ -19,7 +19,7 @@ func TestUpdateMerchantCarCount(t *testing.T) {
 
 	db.createMerchant("some@mail.com", "some name")
 
-	err = db.updateMerchantCarCount("some name", true)
+	err = db.updateMerchantCarCount("some@mail.com", true)
 	if err != nil {
 		t.Error(err)
 	}
