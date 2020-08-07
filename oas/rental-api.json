@@ -399,6 +399,28 @@
                 }
             }
         },
+        "/merchants/me/cars": {
+            "get": {
+                "summary": "Authed Merchant Cars",
+                "description": "Get cars of an authed merchant",
+                "operationId": "merchants/account/cars",
+                "responses": {
+                    "200": {
+                        "description": "response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/car"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/auth/logout": {
             "get": {
                 "summary": "Logout",
