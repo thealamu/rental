@@ -1,9 +1,35 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 )
+
+func createMerchantMeCar(w http.ResponseWriter, r *http.Request) {
+	tag := "handler.merchantmecreatecar"
+
+	db, err := newDatabase(defaultDbConfig)
+	if err != nil {
+		respondError(tag, w, failCodeDB, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var carItem car
+	err = json.NewDecoder(r.Body).Decode(&carItem)
+	if err != nil {
+		respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = db.createMerchantCar(&carItem)
+	if err != nil {
+		respondError(tag, w, failCodeBadParameter, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	respondJSON(w, carItem)
+}
 
 func getMerchantMeCars(w http.ResponseWriter, r *http.Request) {
 	tag := "handler.merchantmecars"
